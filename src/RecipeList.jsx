@@ -3,6 +3,8 @@ import React from 'react';
 class RecipeList extends React.Component {
   render() {
 
+    const addRecipeButton = (<button onClick={this.props.onClickAddRecipe}>Add Recipe</button>);
+
   	const recipes = this.props.recipes.map((recipe) => {
 
   		return (
@@ -13,6 +15,7 @@ class RecipeList extends React.Component {
   	return (
   		<div>
 	  		<h3> Recipes </h3>
+        {addRecipeButton}
 	  		<ul>{recipes}</ul>
   		</div>
   	);
@@ -20,7 +23,8 @@ class RecipeList extends React.Component {
 }
 
 RecipeList.propTypes = {
-	onClick: React.PropTypes.func.isRequired,
+  onClick: React.PropTypes.func.isRequired,
+	onClickAddRecipe: React.PropTypes.func.isRequired,
 	recipes: React.PropTypes.array.isRequired
 };
 
