@@ -5,32 +5,16 @@ import Recipe from './Recipe.jsx';
 class Component extends React.Component {
   constructor() {
     super();
+    fetch('http://localhost:3000/recipes').then((response) => {
+      return response.json();
+    }).then((recipes) => {
+      this.setState({
+        recipes
+      });
+    });
+
     this.state = {
-      recipes: [{
-        id: 1,
-        name: 'Challah',
-        ingredients: [{
-          name: 'eggs',
-          amount: 2,
-          unit: null
-        }]
-      }, {
-        id: 2,
-        name: 'Sourdough',
-        ingredients: [{
-          name: 'flour',
-          amount: 500,
-          unit: 'grams'
-        }, {
-          name: 'water',
-          amount: 400,
-          unit: 'grams'
-        }, {
-          name: 'salt',
-          amount: 10,
-          unit: 'grams'
-        }]
-      }],
+      recipes: null,
       recipe: null
     };
 
@@ -56,13 +40,18 @@ class Component extends React.Component {
         recipe={this.state.recipe}
         onClickBack={this.onClickBack.bind(this)}
       />);
+    } else if (this.state.recipes) {
+
+      return (
+        <RecipeList
+          onClick={this.onClickRecipe.bind(this)}
+          recipes={this.state.recipes}
+        />
+      );
     }
 
     return (
-      <RecipeList
-        onClick={this.onClickRecipe.bind(this)}
-        recipes={this.state.recipes}
-      />
+      <div>Loading...</div>
     );
   }
 }
