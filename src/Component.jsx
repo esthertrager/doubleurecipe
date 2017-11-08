@@ -20,6 +20,11 @@ class Component extends React.Component {
       isEditing: false
     };
 
+    this.onClickRecipe = this.onClickRecipe.bind(this);
+    this.onClickBack = this.onClickBack.bind(this);
+    this.onClickAddRecipe = this.onClickAddRecipe.bind(this);
+    this.onClickSaveRecipe = this.onClickSaveRecipe.bind(this);
+
   }
 
   onClickRecipe(id) {
@@ -43,22 +48,45 @@ class Component extends React.Component {
     });
   }
 
+  onClickSaveRecipe(event, recipe) {
+    event.preventDefault();
+    fetch('http://localhost:3000/recipes', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(recipe)
+    }).then((response) => {
+      return response.json();
+    }).then((recipe) => {
+      const recipes = this.state.recipes;
+
+      recipes.push(recipe);
+      this.setState({
+        recipes,
+        recipe: null,
+        isEditing: false
+      });
+    });
+  }
+
   render() {
     if (this.state.recipe && this.state.isEditing) {
       return (<AddEditRecipe
+        onClickSaveRecipe={this.onClickSaveRecipe}
       />);
     } else if (this.state.recipe) {
       return (<Recipe
         recipe={this.state.recipe}
-        onClickBack={this.onClickBack.bind(this)}
+        onClickBack={this.onClickBack}
       />);
     } else if (this.state.recipes) {
 
       return (
         <RecipeList
-          onClick={this.onClickRecipe.bind(this)}
+          onClickRecipe={this.onClickRecipe}
           recipes={this.state.recipes}
-          onClickAddRecipe={this.onClickAddRecipe.bind(this)}
+          onClickAddRecipe={this.onClickAddRecipe}
         />
       );
     }

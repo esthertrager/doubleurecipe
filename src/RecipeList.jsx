@@ -8,7 +8,7 @@ class RecipeList extends React.Component {
   	const recipes = this.props.recipes.map((recipe) => {
 
   		return (
-	      	<li key={recipe.id} onClick={() => this.props.onClick(recipe.id)}>{recipe.name}</li>
+	      	<li key={recipe.id} onClick={() => this.props.onClickRecipe(recipe.id)}>{recipe.name}</li>
 	    );
   	});
 
@@ -23,7 +23,7 @@ class RecipeList extends React.Component {
 }
 
 RecipeList.propTypes = {
-  onClick: React.PropTypes.func.isRequired,
+  onClickRecipe: React.PropTypes.func.isRequired,
 	onClickAddRecipe: React.PropTypes.func.isRequired,
 	recipes: React.PropTypes.array.isRequired
 };

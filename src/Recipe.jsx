@@ -14,6 +14,7 @@ class Recipe extends React.Component {
     	<div>
 	    	<h3>{this.props.recipe.name}</h3>
 	    	<ul> {ingredients} </ul>
+        <button onClick={this.props.onClickAddRecipe}>Edit Recipe</button>
 	    	<button onClick={this.props.onClickBack}>Back</button>
 	     </div>
     );
