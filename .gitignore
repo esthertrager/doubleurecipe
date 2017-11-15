@@ -97,3 +97,5 @@ node_modules
 .Trash-*
 
 lib
+dist
+doubleurecipe.tar.gz

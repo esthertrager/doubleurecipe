@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "React webpack starter template",
   "main": "lib/index.js",
-  "dependencies": {},
+  "dependencies": {
+    "whatwg-fetch": "^2.0.3"
+  },
   "author": {
     "name": "Krasimir Tsonev",
     "email": "info@krasimirtsonev.com",
@@ -22,6 +24,7 @@
   "scripts": {
     "dev": "./node_modules/.bin/webpack --watch --inline",
     "build": "./node_modules/.bin/webpack --config=webpack.build.config.js",
+    "publish": "npm run build && ./deploy.sh",
     "test": "karma start",
     "test:ci": "watch 'npm run test' src/"
   },

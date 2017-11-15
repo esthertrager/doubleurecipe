@@ -1,0 +1,11 @@
+{
+ 	"port": 80,
+ 	"verbose": true,
+ 	"hosts": [{
+    "hostnames": ["*"],
+     "routes": {
+        "/": "http://localhost:9000/",
+        "/api": "http://localhost:3000/"
+     }
+ 	}]
+}

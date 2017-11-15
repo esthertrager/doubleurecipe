@@ -14,7 +14,7 @@ class Recipe extends React.Component {
     	<div>
 	    	<h3>{this.props.recipe.name}</h3>
 	    	<ul> {ingredients} </ul>
-        <button onClick={this.props.onClickAddRecipe}>Edit Recipe</button>
+        <button onClick={() => this.props.onClickAddEditRecipe(this.props.recipe)}>Edit Recipe</button>
 	    	<button onClick={this.props.onClickBack}>Back</button>
 	     </div>
     );
@@ -23,7 +23,8 @@ class Recipe extends React.Component {
 
 Recipe.propTypes = {
     recipe: React.PropTypes.object.isRequired,
-    onClickBack: React.PropTypes.func.isRequired
+    onClickBack: React.PropTypes.func.isRequired,
+    onClickAddEditRecipe: React.PropTypes.func.isRequired
 };
 
 export default Recipe;

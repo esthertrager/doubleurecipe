@@ -12,13 +12,13 @@ var plugins = [], outputFile;
 
 if (env === 'build') {
   plugins.push(new UglifyJsPlugin({ minimize: true }));
-  outputFile = appName + '.min.js';
+  outputFile = appName + '.js';
 } else {
   outputFile = appName + '.js';
 }
 
 var config = {
-  entry: './src/index.js',
+  entry: ['whatwg-fetch', './src/index.js'],
   devtool: 'source-map',
   output: {
     path: __dirname + '/lib',

@@ -3,9 +3,7 @@ import React from 'react';
 class AddEditRecipe extends React.Component {
 	constructor(props) {
       super(props);
-      this.state = {
-      	ingredients: [{}]
-      };
+      this.state = props.recipe;
       this.handleInputChange = this.handleInputChange.bind(this);
     }
 
@@ -55,7 +53,8 @@ class AddEditRecipe extends React.Component {
 					    name={`ingredient_amount_${index}`}
 					    onChange={this.handleInputChange}
 					    placeholder="Amount"
-					    type="text" />
+					    type="text"
+					    value={this.state.ingredients[index].amount || ''} />
 				    <label htmlFor={`ingredient_unit_${index}`}>Unit</label>
 				    <input
 					    className="form-control"
@@ -63,7 +62,8 @@ class AddEditRecipe extends React.Component {
 					    name={`ingredient_unit_${index}`}
 					    onChange={this.handleInputChange}
 					    placeholder="Unit"
-					    type="text" />
+					    type="text"
+					    value={this.state.ingredients[index].unit || ''} />
 				    <label htmlFor={`ingredient_name_${index}`}>Ingredient Name</label>
 				    <input
 					    className="form-control"
@@ -71,7 +71,8 @@ class AddEditRecipe extends React.Component {
 					    onChange={this.handleInputChange}
 					    name={`ingredient_name_${index}`}
 					    placeholder="Name"
-					    type="text" />
+					    type="text"
+					    value={this.state.ingredients[index].name || ''} />
 				</div>
 			);
 		});
@@ -91,7 +92,8 @@ class AddEditRecipe extends React.Component {
 					    // this is equivalent to onChange={(e) => this.handleInputChange(e)}
 					    onChange={this.handleInputChange}
 					    placeholder="Recipe Name"
-					    type="text" />
+					    type="text"
+					    value={this.state.name} />
 				  </div>
 				  {this.renderIngredients()}
 				  <button onClick={(event) => this.onClickAddIngredient(event)}>+</button>
@@ -103,6 +105,7 @@ class AddEditRecipe extends React.Component {
 }
 
 AddEditRecipe.propTypes = {
+	recipe: React.PropTypes.object.isRequired,
 	onClickSaveRecipe: React.PropTypes.func.isRequired
 };
 
