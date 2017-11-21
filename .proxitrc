@@ -5,7 +5,7 @@
     "hostnames": ["*"],
      "routes": {
         "/": "http://localhost:9000/",
-        "/api": "http://localhost:3000/"
+        "/api": "http://192.34.60.247:3000/"
      }
  	}]
 }

@@ -3,14 +3,16 @@ import React from 'react';
 class RecipeList extends React.Component {
   render() {
 
-    const addRecipeButton = (<button onClick={() => this.props.onClickAddEditRecipe()}>Add Recipe</button>);
+    const addRecipeButton = (<button
+                                className="btn btn-primary"
+                                onClick={() => this.props.onClickAddEditRecipe()}>Add Recipe</button>);
 
   	const recipes = this.props.recipes.map((recipe) => {
 
   		return (
 	      	<li key={recipe.id}>
             <a href="#" onClick={(e) => this.props.onClickRecipe(e, recipe.id)}>{recipe.name}</a>
-            <button onClick={() => this.props.onClickDeleteRecipe(recipe.id)}>-</button>
+            <button className="btn btn-sm" onClick={() => this.props.onClickDeleteRecipe(recipe.id)}>-</button>
           </li>
 	    );
   	});

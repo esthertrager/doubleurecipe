@@ -2,19 +2,24 @@ import React from 'react';
 
 class Recipe extends React.Component {
   render() {
+    const recipe = this.props.recipe;
 
-    const ingredients = this.props.recipe.ingredients.map((ingredient, index) => {
+    const ingredients = recipe.ingredients.map((ingredient, index) => {
 
     return (
 	      	<li key={index}> {ingredient.amount} {ingredient.unit || ''} {ingredient.name}</li>
 	    );
   	});
 
+    const total = recipe.total || {};
+
     return (
     	<div>
-	    	<h3>{this.props.recipe.name}</h3>
+	    	<h3>{recipe.name}</h3>
 	    	<ul> {ingredients} </ul>
-        <button onClick={() => this.props.onClickAddEditRecipe(this.props.recipe)}>Edit Recipe</button>
+        <div>{total.quantity} {total.unit}</div>
+        <div>{recipe.directions}</div>
+        <button onClick={() => this.props.onClickAddEditRecipe(recipe)}>Edit Recipe</button>
 	    	<button onClick={this.props.onClickBack}>Back</button>
 	     </div>
     );
