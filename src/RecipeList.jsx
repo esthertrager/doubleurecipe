@@ -23,7 +23,6 @@ class RecipeList extends React.Component {
 }
 
 RecipeList.propTypes = {
-  onClickAddEditRecipe: React.PropTypes.func.isRequired,
 	onClickDeleteRecipe: React.PropTypes.func.isRequired,
 	recipes: React.PropTypes.array.isRequired
 };

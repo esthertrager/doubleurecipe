@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import AddEditRecipe from './AddEditRecipe.jsx';
 
 class Recipe extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
-    this.state = {
-      isEditing: false
-    };
+    const isEditing = props.recipe.id ? false : true;
+    
+    this.state = { isEditing };
 
     this.onClickAddEditRecipe = this.onClickAddEditRecipe.bind(this);
     this.onClickSaveRecipe = this.onClickSaveRecipe.bind(this);
@@ -20,27 +20,15 @@ class Recipe extends React.Component {
     });
   }
 
-  onClickSaveRecipe(e) {
+  onClickSaveRecipe(e, recipe) {
     e.preventDefault();
-    this.props.onClickSaveRecipe(e, this.props.recipe)
-      .then(() => {
-        this.setState({
-          isEditing: false
-        });
-      })
+    this.props.onClickSaveRecipe(e, recipe)
+      .then((_recipe) => {
+        window.location.assign(`/${_recipe.id}`);
+      });
   }
 
   render() {
-    const recipe = this.props.recipe;
-
-    const ingredients = recipe.ingredients.map((ingredient, index) => {
-      return (
-        <li key={index}> {ingredient.amount} {ingredient.unit || ''} {ingredient.name}</li>
-      );
-  	});
-
-    const total = recipe.total || {};
-
     if (this.state.isEditing) {
       return (
         <AddEditRecipe
@@ -48,6 +36,14 @@ class Recipe extends React.Component {
           onClickSaveRecipe={this.onClickSaveRecipe}
         />);
     }
+
+    const recipe = this.props.recipe;
+    const ingredients = recipe.ingredients.map((ingredient, index) => {
+      return (
+        <li key={index}> {ingredient.amount} {ingredient.unit || ''} {ingredient.name}</li>
+      );
+    });
+    const total = recipe.total || {};
 
     return (
     	<div>

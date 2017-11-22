@@ -1,7 +1,6 @@
 import React from 'react';
 import RecipeList from './RecipeList.jsx';
 import Recipe from './Recipe.jsx';
-import AddEditRecipe from './AddEditRecipe.jsx';
 
 import {
   BrowserRouter as Router,
@@ -10,7 +9,7 @@ import {
   Switch
 } from 'react-router-dom';
 
-class Component extends React.Component {
+class App extends React.Component {
   constructor() {
     super();
     fetch('/api/recipes').then((response) => {
@@ -22,24 +21,12 @@ class Component extends React.Component {
     });
 
     this.state = {
-      recipes: null,
-      isEditing: false
+      recipes: null
     };
 
-    this.onClickAddEditRecipe = this.onClickAddEditRecipe.bind(this);
     this.onClickDeleteRecipe = this.onClickDeleteRecipe.bind(this);
     this.onClickSaveRecipe = this.onClickSaveRecipe.bind(this);
 
-  }
-
-  onClickAddEditRecipe(recipe) {
-    this.setState({
-      recipe: recipe || {
-          name: '',
-          ingredients: [{}]
-      },
-      isEditing: true
-    });
   }
 
   onClickDeleteRecipe(id) {
@@ -56,9 +43,7 @@ class Component extends React.Component {
 
       recipes.splice(index, 1);
       this.setState({
-        recipes,
-        recipe: null,
-        isEditing: false
+        recipes
       });
     });
   }
@@ -83,12 +68,13 @@ class Component extends React.Component {
 
         recipes[index] = recipe;
         this.setState({
-          recipes,
-          recipe: null,
-          isEditing: false
+          recipes
         });
+
+        return recipe;
       });
-    } else {
+    }
+
     return fetch('/api/recipes', {
       headers: {
         'Content-Type': 'application/json'
@@ -102,18 +88,15 @@ class Component extends React.Component {
 
       recipes.push(recipe);
       this.setState({
-        recipes,
-        recipe: null,
-        isEditing: false
+        recipes
       });
+
       return recipe;
     });
-    }
   }
 
   render() {
     if (this.state.recipes) {
-
       return (
         <Router>
           <Switch>
@@ -123,32 +106,24 @@ class Component extends React.Component {
                   <Link to="/create">Add Recipe</Link>
                   <RecipeList
                     recipes={this.state.recipes}
-                    onClickAddEditRecipe={this.onClickAddEditRecipe}
                     onClickDeleteRecipe={this.onClickDeleteRecipe}
                   />
                 </div>
               );
             }} />
-            
+
             <Route exact path="/create" render={() => {
               const newRecipe = {
                 name: '',
                 ingredients: [{}]
               };
 
-              const onClickSaveRecipe = (e, recipe) => {
-                e.preventDefault();
-                this.onClickSaveRecipe(e, recipe)
-                  .then((recipe) => {
-                    window.location.assign(`/${recipe.id}`);
-                  });
-              };
-
               return (
-                <AddEditRecipe
+                <Recipe
                   recipe={newRecipe}
-                  onClickSaveRecipe={onClickSaveRecipe}
-                />);
+                  onClickSaveRecipe={this.onClickSaveRecipe}
+                />
+              );
             }} />
 
             <Route path="/:id" render={({ match }) => {
@@ -164,7 +139,6 @@ class Component extends React.Component {
               );
             }} />
 
-
           </Switch>
         </Router>
       );
@@ -176,7 +150,7 @@ class Component extends React.Component {
   }
 }
 
-Component.propTypes = {
+App.propTypes = {
 };
 
-export default Component;
+export default App;
