@@ -3,6 +3,13 @@ import RecipeList from './RecipeList.jsx';
 import Recipe from './Recipe.jsx';
 import AddEditRecipe from './AddEditRecipe.jsx';
 
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch
+} from 'react-router-dom';
+
 class Component extends React.Component {
   constructor() {
     super();
@@ -16,31 +23,13 @@ class Component extends React.Component {
 
     this.state = {
       recipes: null,
-      recipe: null,
       isEditing: false
     };
 
-    this.onClickRecipe = this.onClickRecipe.bind(this);
-    this.onClickBack = this.onClickBack.bind(this);
     this.onClickAddEditRecipe = this.onClickAddEditRecipe.bind(this);
     this.onClickDeleteRecipe = this.onClickDeleteRecipe.bind(this);
     this.onClickSaveRecipe = this.onClickSaveRecipe.bind(this);
 
-  }
-
-  onClickRecipe(event, id) {
-    event.preventDefault();
-    this.setState({
-      recipe: this.state.recipes.find((recipe) => {
-        return recipe.id === id;
-      })
-    });
-  }
-
-  onClickBack(event) {
-    this.setState({
-      recipe: null
-    });
   }
 
   onClickAddEditRecipe(recipe) {
@@ -77,7 +66,7 @@ class Component extends React.Component {
   onClickSaveRecipe(event, recipe) {
     event.preventDefault();
     if ('id' in recipe) {
-      fetch(`/api/recipes/${recipe.id}`, {
+      return fetch(`/api/recipes/${recipe.id}`, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -100,7 +89,7 @@ class Component extends React.Component {
         });
       });
     } else {
-    fetch('/api/recipes', {
+    return fetch('/api/recipes', {
       headers: {
         'Content-Type': 'application/json'
       },
@@ -117,31 +106,67 @@ class Component extends React.Component {
         recipe: null,
         isEditing: false
       });
+      return recipe;
     });
     }
   }
 
   render() {
-    if (this.state.recipe && this.state.isEditing) {
-      return (<AddEditRecipe
-        recipe={this.state.recipe}
-        onClickSaveRecipe={this.onClickSaveRecipe}
-      />);
-    } else if (this.state.recipe) {
-      return (<Recipe
-        recipe={this.state.recipe}
-        onClickBack={this.onClickBack}
-        onClickAddEditRecipe={this.onClickAddEditRecipe}
-      />);
-    } else if (this.state.recipes) {
+    if (this.state.recipes) {
 
       return (
-        <RecipeList
-          onClickRecipe={this.onClickRecipe}
-          recipes={this.state.recipes}
-          onClickAddEditRecipe={this.onClickAddEditRecipe}
-          onClickDeleteRecipe={this.onClickDeleteRecipe}
-        />
+        <Router>
+          <Switch>
+            <Route exact path="/" render={() => {
+              return (
+                <div>
+                  <Link to="/create">Add Recipe</Link>
+                  <RecipeList
+                    recipes={this.state.recipes}
+                    onClickAddEditRecipe={this.onClickAddEditRecipe}
+                    onClickDeleteRecipe={this.onClickDeleteRecipe}
+                  />
+                </div>
+              );
+            }} />
+            
+            <Route exact path="/create" render={() => {
+              const newRecipe = {
+                name: '',
+                ingredients: [{}]
+              };
+
+              const onClickSaveRecipe = (e, recipe) => {
+                e.preventDefault();
+                this.onClickSaveRecipe(e, recipe)
+                  .then((recipe) => {
+                    window.location.assign(`/${recipe.id}`);
+                  });
+              };
+
+              return (
+                <AddEditRecipe
+                  recipe={newRecipe}
+                  onClickSaveRecipe={onClickSaveRecipe}
+                />);
+            }} />
+
+            <Route path="/:id" render={({ match }) => {
+              const recipe = this.state.recipes.find((_recipe) => {
+                return _recipe.id === match.params.id;
+              });
+
+              return (
+                <Recipe
+                  recipe={recipe}
+                  onClickSaveRecipe={this.onClickSaveRecipe}
+                />
+              );
+            }} />
+
+
+          </Switch>
+        </Router>
       );
     }
 

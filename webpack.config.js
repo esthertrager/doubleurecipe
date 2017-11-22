@@ -53,7 +53,8 @@ if (env === 'dev') {
   new WebpackDevServer(webpack(config), {
     contentBase: './example',
     hot: true,
-    debug: true
+    debug: true,
+    historyApiFallback: true
   }).listen(port, host, function (err, result) {
     if (err) {
       console.log(err);

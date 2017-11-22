@@ -99,3 +99,4 @@ node_modules
 lib
 dist
 doubleurecipe.tar.gz
+npm-cache

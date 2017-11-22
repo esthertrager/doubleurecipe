@@ -1,17 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 class RecipeList extends React.Component {
   render() {
-
-    const addRecipeButton = (<button
-                                className="btn btn-primary"
-                                onClick={() => this.props.onClickAddEditRecipe()}>Add Recipe</button>);
-
   	const recipes = this.props.recipes.map((recipe) => {
 
   		return (
 	      	<li key={recipe.id}>
-            <a href="#" onClick={(e) => this.props.onClickRecipe(e, recipe.id)}>{recipe.name}</a>
+            <Link to={`/${recipe.id}`}>{recipe.name}</Link>
             <button className="btn btn-sm" onClick={() => this.props.onClickDeleteRecipe(recipe.id)}>-</button>
           </li>
 	    );
@@ -20,7 +16,6 @@ class RecipeList extends React.Component {
   	return (
   		<div>
 	  		<h3> Recipes </h3>
-        {addRecipeButton}
 	  		<ul>{recipes}</ul>
   		</div>
   	);
@@ -28,7 +23,6 @@ class RecipeList extends React.Component {
 }
 
 RecipeList.propTypes = {
-  onClickRecipe: React.PropTypes.func.isRequired,
   onClickAddEditRecipe: React.PropTypes.func.isRequired,
 	onClickDeleteRecipe: React.PropTypes.func.isRequired,
 	recipes: React.PropTypes.array.isRequired
