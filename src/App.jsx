@@ -1,6 +1,8 @@
 import React from 'react';
 import RecipeList from './RecipeList.jsx';
 import Recipe from './Recipe.jsx';
+import Login from './Login.jsx';
+import Register from './Register.jsx';
 
 import {
   BrowserRouter as Router,
@@ -26,7 +28,6 @@ class App extends React.Component {
 
     this.onClickDeleteRecipe = this.onClickDeleteRecipe.bind(this);
     this.onClickSaveRecipe = this.onClickSaveRecipe.bind(this);
-
   }
 
   onClickDeleteRecipe(id) {
@@ -100,6 +101,12 @@ class App extends React.Component {
       return (
         <Router>
           <Switch>
+            <Route exact path="/login" component={Login}
+            />
+
+            <Route exact path="/register" component={Register}
+            />
+
             <Route exact path="/" render={() => {
               return (
                 <div>

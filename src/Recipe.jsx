@@ -6,8 +6,8 @@ class Recipe extends React.Component {
   constructor(props) {
     super(props);
 
-    const isEditing = props.recipe.id ? false : true;
-    
+    const isEditing = !!props.recipe.id;
+
     this.state = { isEditing };
 
     this.onClickAddEditRecipe = this.onClickAddEditRecipe.bind(this);
