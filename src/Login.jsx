@@ -9,8 +9,9 @@ class Login extends React.Component {
 
       	this.setState({
 	        [name]: value
-	      }
-		}
+	      });
+      }
+
   render() {
   	return (
 	  	<form>

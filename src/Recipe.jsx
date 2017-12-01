@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AddEditRecipe from './AddEditRecipe.jsx';
+import ScaleRecipe from './ScaleRecipe.jsx';
 
 class Recipe extends React.Component {
   constructor(props) {
     super(props);
 
-    const isEditing = !!props.recipe.id;
+    const isEditing = !props.recipe.id;
 
     this.state = { isEditing };
 
@@ -51,8 +52,8 @@ class Recipe extends React.Component {
 	    	<ul>{ingredients}</ul>
         <div>{total.quantity} {total.unit}</div>
         <div>{recipe.directions}</div>
-        <button onClick={this.onClickAddEditRecipe}>Edit Recipe</button>
-        <Link to="/">Back</Link>
+        <button className="btn" onClick={this.onClickAddEditRecipe}>Edit Recipe</button>
+        <Link to={`${this.props.match.url}/scale`}>Scale Recipe</Link>
 	    </div>
     );
   }

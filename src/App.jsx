@@ -3,6 +3,7 @@ import RecipeList from './RecipeList.jsx';
 import Recipe from './Recipe.jsx';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
+import ScaleRecipe from './ScaleRecipe.jsx';
 
 import {
   BrowserRouter as Router,
@@ -133,6 +134,19 @@ class App extends React.Component {
               );
             }} />
 
+
+            <Route path="/:id/scale" render={({ match }) => {
+              const recipe = this.state.recipes.find((_recipe) => {
+                return _recipe.id === match.params.id;
+              });
+              return (
+                <ScaleRecipe
+                  recipe={recipe}
+                  //onClickSaveRecipe={this.onClickSaveRecipe}
+                />
+              );
+            }} />
+            
             <Route path="/:id" render={({ match }) => {
               const recipe = this.state.recipes.find((_recipe) => {
                 return _recipe.id === match.params.id;
@@ -142,6 +156,7 @@ class App extends React.Component {
                 <Recipe
                   recipe={recipe}
                   onClickSaveRecipe={this.onClickSaveRecipe}
+                  match={match}
                 />
               );
             }} />
