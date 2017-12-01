@@ -18,34 +18,73 @@ class ScaleRecipe extends React.Component {
         const index = path[2];
 
         if (!isNaN(value) && value > 0) {
-        	const oldValue = this.props.recipe.ingredients[index].amount;
-	        const scalingFactor = value / oldValue;
+        	if (path[0] == 'ingredient') {
+	        	const oldValue = this.props.recipe.ingredients[index].amount;
+		        const scalingFactor = value / oldValue;
 
-	        const scaledIngredients = this.props.recipe.ingredients.map((ingredient) => {
-	        	const ingredientCopy = Object.assign({}, ingredient);
+		        const scaledIngredients = this.props.recipe.ingredients.map((ingredient) => {
+		        	const ingredientCopy = Object.assign({}, ingredient);
 
-	        	ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
-	        	return ingredientCopy;
-	        });
+		        	ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
+		        	return ingredientCopy;
+		        });
 
-	        const scaledTotal = this.props.recipe.total.quantity * scalingFactor;
+		        const scaledTotal = this.props.recipe.total.quantity * scalingFactor;
 
-	        this.setState({
-	        	ingredients: scaledIngredients,
-	        	total: {
-	        		quantity: scaledTotal,
-	        		unit: this.state.total.unit
-	        	}
-	        });
+		        this.setState({
+		        	ingredients: scaledIngredients,
+		        	total: {
+		        		quantity: scaledTotal,
+		        		unit: this.state.total.unit
+		        	}
+		        });
+		    }
+		    else {
+		    	const oldValue = this.props.recipe.total.quantity;
+		        const scalingFactor = value / oldValue;
+
+		        const scaledIngredients = this.props.recipe.ingredients.map((ingredient) => {
+		        	const ingredientCopy = Object.assign({}, ingredient);
+
+		        	ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
+		        	return ingredientCopy;
+		        });
+
+		        const scaledTotal = Object.assign({}, this.props.recipe.total);
+		        scaledTotal.quantity = scaledTotal.quantity * scalingFactor
+
+		        this.setState({
+		        	ingredients: scaledIngredients,
+		        	total: scaledTotal
+		        });
+		    }
         } else {
-			const ingredients = this.state.ingredients.map((ingredient) => {
+        	if (path[0] == 'ingredient') {
+				const ingredients = this.state.ingredients.map((ingredient) => {
 
-				return Object.assign({}, ingredient);
-			});
-			ingredients[index].amount = event.target.value;
-			this.setState({
-				ingredients
-			});
+					return Object.assign({}, ingredient);
+				});
+				ingredients[index].amount = event.target.value;
+				this.setState({
+					ingredients
+				});
+			}
+			else {
+				const total = Object.assign({}, this.state.total);
+				total.quantity = event.target.value;
+				this.setState({ total });
+				// const total = this.state.total.quantity) => {
+
+				// 	return Object.assign({}, ingredient);
+				// });
+				// ingredients[index].amount = event.target.value;
+				this.setState({
+					total: {
+						quantity: event.target.value,
+		        		unit: this.state.total.unit
+					}
+				});
+			}
         }
 	}
 
