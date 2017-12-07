@@ -1,17 +1,53 @@
 'use strict';
 import React from 'react';
+import convert from 'recipe-unit-converter';
 
 class ScaleRecipe extends React.Component {
 	constructor(props) {
       super(props);
       this.state = Object.assign({}, props.recipe);
       this.handleInputChange = this.handleInputChange.bind(this);
+      this.handleUnitChange = this.handleUnitChange.bind(this);
+    }
+
+    scale(scalingFactor) {
+    	const scaledIngredients = this.props.recipe.ingredients.map((ingredient) => {
+        const ingredientCopy = Object.assign({}, ingredient);
+
+        	ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
+        	return ingredientCopy;
+        });
+
+        const scaledTotal = Object.assign({}, this.props.recipe.total);
+        scaledTotal.quantity = scaledTotal.quantity * scalingFactor
+
+        this.setState({
+        	ingredients: scaledIngredients,
+        	total: scaledTotal
+        });
+    }
+
+    scaleUnit(scalingFactor, unitIndex) {
+    	const scaledIngredients = this.props.recipe.ingredients.map((ingredient, index) => {
+        const ingredientCopy = Object.assign({}, ingredient);
+
+        	if(parseInt(unitIndex) !== index)ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
+        	return ingredientCopy;
+        });
+
+        const scaledTotal = Object.assign({}, this.props.recipe.total);
+        scaledTotal.quantity = scaledTotal.quantity * scalingFactor
+
+        this.setState({
+        	ingredients: scaledIngredients,
+        	total: scaledTotal
+        });
     }
 
 	handleInputChange(event) {
-	    const target = event.target;
-        const value = parseFloat(target.value);
-        const name = target.name;
+	    const input = event.target;
+        const value = parseFloat(input.value);
+        const name = input.name;
 
         const path = name.split('_');
 
@@ -22,41 +58,12 @@ class ScaleRecipe extends React.Component {
 	        	const oldValue = this.props.recipe.ingredients[index].amount;
 		        const scalingFactor = value / oldValue;
 
-		        const scaledIngredients = this.props.recipe.ingredients.map((ingredient) => {
-		        	const ingredientCopy = Object.assign({}, ingredient);
-
-		        	ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
-		        	return ingredientCopy;
-		        });
-
-		        const scaledTotal = this.props.recipe.total.quantity * scalingFactor;
-
-		        this.setState({
-		        	ingredients: scaledIngredients,
-		        	total: {
-		        		quantity: scaledTotal,
-		        		unit: this.state.total.unit
-		        	}
-		        });
+		        this.scale(scalingFactor);
 		    }
 		    else {
 		    	const oldValue = this.props.recipe.total.quantity;
 		        const scalingFactor = value / oldValue;
-
-		        const scaledIngredients = this.props.recipe.ingredients.map((ingredient) => {
-		        	const ingredientCopy = Object.assign({}, ingredient);
-
-		        	ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
-		        	return ingredientCopy;
-		        });
-
-		        const scaledTotal = Object.assign({}, this.props.recipe.total);
-		        scaledTotal.quantity = scaledTotal.quantity * scalingFactor
-
-		        this.setState({
-		        	ingredients: scaledIngredients,
-		        	total: scaledTotal
-		        });
+		        this.scale(scalingFactor);   
 		    }
         } else {
         	if (path[0] == 'ingredient') {
@@ -64,28 +71,32 @@ class ScaleRecipe extends React.Component {
 
 					return Object.assign({}, ingredient);
 				});
-				ingredients[index].amount = event.target.value;
+				ingredients[index].amount = value;
 				this.setState({
 					ingredients
 				});
 			}
 			else {
 				const total = Object.assign({}, this.state.total);
-				total.quantity = event.target.value;
+				total.quantity = value;
 				this.setState({ total });
-				// const total = this.state.total.quantity) => {
-
-				// 	return Object.assign({}, ingredient);
-				// });
-				// ingredients[index].amount = event.target.value;
-				this.setState({
-					total: {
-						quantity: event.target.value,
-		        		unit: this.state.total.unit
-					}
-				});
 			}
         }
+	}
+
+	handleUnitChange(event) {
+		const input = event.target;
+        const value = input.value;
+        const name = input.name;
+
+        const path = name.split('_');
+
+        const index = path[2];
+
+        const oldValue = this.props.recipe.ingredients[index].unit;
+
+		const scalingFactor = convert(1).from(value).to(oldValue);
+		this.scaleUnit(scalingFactor, index);
 	}
 
 	updateIngredient(key, value, index) {
@@ -122,23 +133,51 @@ class ScaleRecipe extends React.Component {
 						    value={this.state.ingredients[index].amount || ''} />
 					</div>
 					<div className="form-group col-4">
+						<label htmlFor="exampleFormControlSelect1">Unit</label>
+						<select
+							value={ingredient.unit}
+							className="form-control" 
+							id={`ingredient_unit_${index}`}
+						    name={`ingredient_unit_${index}`}
+						    onChange={this.handleUnitChange}>
+						  <option></option>
+						  <option>smidgen</option>
+						  <option>pinch</option>
+						  <option>dash</option>
+						  <option>tad</option>
+						  <option>tsp</option>
+						  <option>Tbs</option>
+						  <option>fl-oz</option>
+						  <option>cups</option>
+						  <option>pints</option>
+						  <option>quarts</option>
+						  <option>gallons</option>
+						  <option>litres</option>
+						  <option>millilitres</option>
+						  <option>grams</option>
+						  <option>milligrams</option>
+						  <option>kilograms</option>
+						</select>
+					</div>
+					{/*
+					<div className="form-group col-4">
 					    <label htmlFor={`ingredient_unit_${index}`}>Unit</label>
 					    <input
 						    className="form-control"
 						    id={`ingredient_unit_${index}`}
 						    name={`ingredient_unit_${index}`}
-						    onChange={this.handleInputChange}
+						    onChange={this.handleUnitChange}
 						    placeholder="Unit"
 						    type="text"
 						    value={this.state.ingredients[index].unit || ''} />
 					</div>
+					*/}
 					<div className="form-group col-5">
 					    <label htmlFor={`ingredient_name_${index}`}>Name</label>
 					    <input
 					 		readOnly
 						    className="form-control"
 						    id={`ingredient_name_${index}`}
-						    onChange={this.handleInputChange}
 						    name={`ingredient_name_${index}`}
 						    placeholder="Name"
 						    type="text"

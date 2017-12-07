@@ -66,18 +66,33 @@ class AddEditRecipe extends React.Component {
 						    onChange={this.handleInputChange}
 						    placeholder="Quantity"
 						    type="text"
-						    value={this.state.ingredients[index].amount || ''} />
+						    value={ingredient.amount || ''} />
 					</div>
 					<div className="form-group col-4">
-					    <label htmlFor={`ingredient_unit_${index}`}>Unit</label>
-					    <input
-						    className="form-control"
-						    id={`ingredient_unit_${index}`}
+						<label htmlFor="exampleFormControlSelect1">Unit</label>
+						<select value={ingredient.unit}
+							className="form-control" 
+							id={`ingredient_unit_${index}`}
 						    name={`ingredient_unit_${index}`}
-						    onChange={this.handleInputChange}
-						    placeholder="Unit"
-						    type="text"
-						    value={this.state.ingredients[index].unit || ''} />
+						    onChange={this.handleInputChange}>
+						  <option value=""></option>
+						  <option value="smidgen">smidgen</option>
+						  <option value="pinch">pinch</option>
+						  <option value="dash">dash</option>
+						  <option value="tad">tad</option>
+						  <option value="tsp">tsp</option>
+						  <option value="Tbs">Tbs</option>
+						  <option value="fl-oz">fl-oz</option>
+						  <option value="cup">cups</option>
+						  <option value="pnt">pints</option>
+						  <option value="qt">quarts</option>
+						  <option value="gal">gallons</option>
+						  <option value="l">litres</option>
+						  <option value="ml">millilitres</option>
+						  <option value="g">grams</option>
+						  <option value="mg">milligrams</option>
+						  <option value="kg">kilograms</option>
+						</select>
 					</div>
 					<div className="form-group col-5">
 					    <label htmlFor={`ingredient_name_${index}`}>Name</label>

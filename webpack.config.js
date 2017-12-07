@@ -30,7 +30,7 @@ var config = {
       {
         test: /(\.jsx|\.js)$/,
         loader: 'babel',
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules|bower_components|recipe-unit-converter)/,
         query: {
           presets: ['react', 'es2015']
         }
@@ -38,7 +38,7 @@ var config = {
       {
         test: /(\.jsx|\.js)$/,
         loader: "eslint-loader",
-        exclude: /node_modules/
+        exclude: /(node_modules|recipe-unit-converter)/
       }, { test: /\.css$/, loader: 'style-loader!css-loader' }
     ]
   },
