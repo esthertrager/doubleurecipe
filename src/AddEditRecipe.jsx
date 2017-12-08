@@ -152,6 +152,34 @@ class AddEditRecipe extends React.Component {
 						    value={total.quantity || ''} />
 					  </div>
 					  <div className="form-group col-4">
+						<label htmlFor="exampleFormControlSelect1">Unit</label>
+						<select
+							value={total.unit}
+							className="form-control" 
+							id={`total_unit`}
+						    name={`total_unit`}
+						    onChange={this.handleInputChange}>
+						  <option value=""></option>
+						  <option value="smidgen">smidgen</option>
+						  <option value="pinch">pinch</option>
+						  <option value="dash">dash</option>
+						  <option value="tad">tad</option>
+						  <option value="tsp">tsp</option>
+						  <option value="Tbs">Tbs</option>
+						  <option value="fl-oz">fl-oz</option>
+						  <option value="cup">cups</option>
+						  <option value="pnt">pints</option>
+						  <option value="qt">quarts</option>
+						  <option value="gal">gallons</option>
+						  <option value="l">litres</option>
+						  <option value="ml">millilitres</option>
+						  <option value="g">grams</option>
+						  <option value="mg">milligrams</option>
+						  <option value="kg">kilograms</option>
+						</select>
+					</div>
+					{/*
+					  <div className="form-group col-4">
 					    <label htmlFor="name">Unit</label>
 					    <input
 						    className="form-control"
@@ -162,6 +190,7 @@ class AddEditRecipe extends React.Component {
 						    type="text"
 						    value={total.unit || ''} />
 					  </div>
+					  */}
 					</div>
 				  <div className="form-group">
 				    <label htmlFor="name">Directions</label>
