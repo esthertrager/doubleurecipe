@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AddEditRecipe from './AddEditRecipe.jsx';
 import ScaleRecipe from './ScaleRecipe.jsx';
+import moment from 'moment';
 
 class Recipe extends React.Component {
   constructor(props) {
@@ -25,7 +26,7 @@ class Recipe extends React.Component {
     e.preventDefault();
     this.props.onClickSaveRecipe(e, recipe)
       .then((_recipe) => {
-        window.location.assign(`/${_recipe.id}`);
+        window.location.assign(`${_recipe.id}`);
       });
   }
 
@@ -49,6 +50,7 @@ class Recipe extends React.Component {
     return (
     	<div>
         <h3>{recipe.name}</h3>
+        <span>Updated {moment(recipe.updatedDate).fromNow()}</span>
 	    	<ul>{ingredients}</ul>
         <div>{total.quantity} {total.unit}</div>
         <div>{recipe.directions}</div>

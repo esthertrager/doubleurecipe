@@ -7,7 +7,7 @@ class RecipeList extends React.Component {
 
   		return (
 	      	<li key={recipe.id}>
-            <Link to={`/${recipe.id}`}>{recipe.name}</Link>
+            <Link to={`/recipes/${recipe.id}`}>{recipe.name}</Link>
             <button className="btn btn-sm" onClick={() => this.props.onClickDeleteRecipe(recipe.id)}>-</button>
           </li>
 	    );

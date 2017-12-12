@@ -102,16 +102,25 @@ class App extends React.Component {
       return (
         <Router>
           <Switch>
+            <Route exact path="/" render={() => {
+              return (
+                <div>
+                  <h1>Kukeze</h1>
+                  <h2>Create, Share and Scale Your Recipes</h2>
+                  <Link to="/recipes">Go to My Recipes</Link>
+                </div>
+              );
+            }} />
             <Route exact path="/login" component={Login}
             />
 
             <Route exact path="/register" component={Register}
             />
 
-            <Route exact path="/" render={() => {
+            <Route exact path="/recipes" render={() => {
               return (
                 <div>
-                  <Link to="/create">Add Recipe</Link>
+                  <Link to="/recipes/create">Add Recipe</Link>
                   <RecipeList
                     recipes={this.state.recipes}
                     onClickDeleteRecipe={this.onClickDeleteRecipe}
@@ -120,7 +129,7 @@ class App extends React.Component {
               );
             }} />
 
-            <Route exact path="/create" render={() => {
+            <Route exact path="/recipes/create" render={() => {
               const newRecipe = {
                 name: '',
                 ingredients: [{}]
@@ -135,7 +144,7 @@ class App extends React.Component {
             }} />
 
 
-            <Route path="/:id/scale" render={({ match }) => {
+            <Route path="/recipes/:id/scale" render={({ match }) => {
               const recipe = this.state.recipes.find((_recipe) => {
                 return _recipe.id === match.params.id;
               });
@@ -147,7 +156,7 @@ class App extends React.Component {
               );
             }} />
             
-            <Route path="/:id" render={({ match }) => {
+            <Route path="/recipes/:id" render={({ match }) => {
               const recipe = this.state.recipes.find((_recipe) => {
                 return _recipe.id === match.params.id;
               });
