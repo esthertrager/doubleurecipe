@@ -4,11 +4,7 @@
   "description": "React webpack starter template",
   "main": "lib/index.js",
   "dependencies": {
-    "bootstrap": "^4.0.0-beta.2",
-    "convert-units": "^2.3.1",
-    "react-router-dom": "^4.2.2",
-    "recipe-unit-converter": "^2.3.1",
-    "whatwg-fetch": "^2.0.3"
+    "express": "^4.16.2"
   },
   "author": {
     "name": "Krasimir Tsonev",
@@ -33,6 +29,10 @@
     "test:ci": "watch 'npm run test' src/"
   },
   "devDependencies": {
+    "bootstrap": "^4.0.0-beta.2",
+    "react-router-dom": "^4.2.2",
+    "recipe-unit-converter": "^2.3.1",
+    "whatwg-fetch": "^2.0.3",
     "babel": "6.5.2",
     "babel-core": "6.6.5",
     "babel-eslint": "7.2.1",
