@@ -1,97 +1,26 @@
-'use strict';
 import React from 'react';
-import convert from 'recipe-unit-converter';
 
-class ScaleRecipe extends React.Component {
+class RecipeForm extends React.Component {
 	constructor(props) {
       super(props);
       this.state = Object.assign({}, props.recipe);
       this.handleInputChange = this.handleInputChange.bind(this);
-      this.handleUnitChange = this.handleUnitChange.bind(this);
-      this.handleTotalUnitChange = this.handleTotalUnitChange.bind(this);
+
     }
 
-    scale(scalingFactor) {
-    	const scaledIngredients = this.props.recipe.ingredients.map((ingredient) => {
-        const ingredientCopy = Object.assign({}, ingredient);
-        	ingredientCopy.amount = scalingFactor * parseFloat(ingredientCopy.amount);
-        	ingredientCopy.amount = +ingredientCopy.amount.toFixed(2);
-        	
-        	return ingredientCopy;
-        });
-
-        const scaledTotal = Object.assign({}, this.props.recipe.total);
-        scaledTotal.quantity = scaledTotal.quantity * parseFloat(scalingFactor);
-        scaledTotal.quantity = +scaledTotal.quantity.toFixed(2);
-
-        this.setState({
-        	ingredients: scaledIngredients,
-        	total: scaledTotal
-        });
-    }
-
-    scaleUnit(scalingFactor, unitIndex, value) {
-    	const scaledIngredients = this.props.recipe.ingredients.map((ingredient, index) => {
-        const ingredientCopy = Object.assign({}, ingredient);
-        	if (parseInt(unitIndex) !== index) {
-        		ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
-        	} else {
-        		ingredientCopy.unit = value;
-        	}
-
-        	return ingredientCopy;
-        });
-
-        const scaledTotal = Object.assign({}, this.props.recipe.total);
-        scaledTotal.quantity = scaledTotal.quantity * scalingFactor
-
-        this.setState({
-        	ingredients: scaledIngredients,
-        	total: scaledTotal
-        });
-    }
+    componentWillReceiveProps(nextProps) {
+    	const oldRecipe = this.state;
+    	const newRecipe = nextProps.recipe;
+    	for (let i = 0; i < oldRecipe.ingredients.length; i++) {
+    		if (parseFloat(oldRecipe.ingredients[i].amount) !== parseFloat(newRecipe.ingredients[i].amount)) {
+    			this.setState(newRecipe);
+    			
+    			return;
+    		}
+    	}
+	}
 
 	handleInputChange(event) {
-	    const input = event.target;
-        const value = parseFloat(input.value);
-        const name = input.name;
-
-        const path = name.split('_');
-
-        const index = path[2];
-
-        if (!isNaN(value) && value > 0) {
-        	if (path[0] == 'ingredient') {
-	        	const oldValue = this.props.recipe.ingredients[index].amount;
-		        const scalingFactor = value / oldValue;
-
-		        this.scale(scalingFactor);
-		    }
-		    else {
-		    	const oldValue = this.props.recipe.total.quantity;
-		        const scalingFactor = value / oldValue;
-		        this.scale(scalingFactor);   
-		    }
-        } else {
-        	if (path[0] == 'ingredient') {
-				const ingredients = this.state.ingredients.map((ingredient) => {
-
-					return Object.assign({}, ingredient);
-				});
-				ingredients[index].amount = value;
-				this.setState({
-					ingredients
-				});
-			}
-			else {
-				const total = Object.assign({}, this.state.total);
-				total.quantity = value;
-				this.setState({ total });
-			}
-        }
-	}
-
-	handleUnitChange(event) {
 		const input = event.target;
         const value = input.value;
         const name = input.name;
@@ -99,58 +28,23 @@ class ScaleRecipe extends React.Component {
         const path = name.split('_');
 
         const index = path[2];
+		if (path[0] == 'ingredient') {
+			const ingredients = this.state.ingredients.map((ingredient) => {
 
-        const oldValue = this.props.recipe.ingredients[index].unit;
+				return Object.assign({}, ingredient);
+			});
+			ingredients[index].amount = value;
+			this.setState({
+				ingredients
+			});
+		}
+		else {
+			const total = Object.assign({}, this.state.total);
+			total.quantity = value;
+			this.setState({ total });
+		}
 
-		const scalingFactor = convert(1).from(value).to(oldValue);
-
-		this.scaleUnit(scalingFactor, index, value);
-		
-	}
-
-	handleTotalUnitChange(event) {
-		const input = event.target;
-        const value = input.value;
-        const name = input.name;
-
-        const oldValue = this.props.recipe.total.unit;
-
-		const scalingFactor = convert(1).from(value).to(oldValue);
-
-    	const scaledIngredients = this.props.recipe.ingredients.map((ingredient, index) => {
-	        const ingredientCopy = Object.assign({}, ingredient);
-
-	        ingredientCopy.amount = scalingFactor * ingredientCopy.amount;
-
-	        return ingredientCopy;
-	    });
-
-	    const total = Object.assign({}, this.state.total);
-        total.unit = value;
-
-    	this.setState({
-        	ingredients: scaledIngredients,
-        	total
-        });
-
-	}
-
-	updateIngredient(key, value, index) {
-		const ingredients = this.state.ingredients;
-
-		ingredients[index][key] = value;
-		this.setState({
-			ingredients
-		});
-	}
-
-	updateTotal(key, value, index) {
-		const total = this.state.total || {};
-
-		total[key] = value;
-		this.setState({
-			total
-		});
+	  	this.props.handleInputChange(event)
 	}
 
 	renderIngredients() {
@@ -175,7 +69,7 @@ class ScaleRecipe extends React.Component {
 							className="form-control" 
 							id={`ingredient_unit_${index}`}
 						  name={`ingredient_unit_${index}`}
-						  onChange={this.handleUnitChange}>
+						  onChange={this.props.handleUnitChange}>
 							  <option value=""></option>
 							  <option value="smidgen">smidgen</option>
 							  <option value="pinch">pinch</option>
@@ -198,7 +92,7 @@ class ScaleRecipe extends React.Component {
 					<div className="form-group col-5">
 					    {index === 0 ? <label htmlFor={`ingredient_name_${index}`}>Name</label> : ''}
 					    <input
-					 			readOnly
+					 		readOnly
 						    className="form-control"
 						    id={`ingredient_name_${index}`}
 						    name={`ingredient_name_${index}`}
@@ -245,7 +139,7 @@ class ScaleRecipe extends React.Component {
 							className="form-control" 
 							id={`total_unit`}
 						    name={`total_unit`}
-						    onChange={this.handleTotalUnitChange}>
+						    onChange={this.props.handleTotalUnitChange}>
 						  <option value=""></option>
 						  <option value="smidgen">smidgen</option>
 						  <option value="pinch">pinch</option>
@@ -273,7 +167,7 @@ class ScaleRecipe extends React.Component {
 					    id="directions"
 					    name="directions"
 					    rows="5"
-					    onChange={this.handleInputChange}
+					    onChange={this.props.handleInputChange}
 					    placeholder="Directions"
 					    value={this.state.directions || ''} />
 				  </div>
@@ -284,4 +178,4 @@ class ScaleRecipe extends React.Component {
   }
 }
 
-export default ScaleRecipe;
+export default RecipeForm;
