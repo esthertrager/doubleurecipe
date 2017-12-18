@@ -24,10 +24,10 @@ class ScaleRecipe extends React.Component {
         scaledTotal.quantity = scaledTotal.quantity * parseFloat(scalingFactor);
         scaledTotal.quantity = +scaledTotal.quantity.toFixed(2);
 
-        this.setState({
+        return {
         	ingredients: scaledIngredients,
         	total: scaledTotal
-        });
+        };
     }
 
     scaleUnit(scalingFactor, unitIndex, value) {
@@ -60,35 +60,37 @@ class ScaleRecipe extends React.Component {
 
         const index = path[2];
 
+        let scaledRecipe;
+
         if (!isNaN(value) && value > 0) {
         	if (path[0] == 'ingredient') {
 	        	const oldValue = this.props.recipe.ingredients[index].amount;
 		        const scalingFactor = value / oldValue;
 
-		        this.scale(scalingFactor);
+		        scaledRecipe = this.scale(scalingFactor);
 		    }
 		    else {
 		    	const oldValue = this.props.recipe.total.quantity;
 		        const scalingFactor = value / oldValue;
-		        this.scale(scalingFactor);   
+		        scaledRecipe = this.scale(scalingFactor);
 		    }
-        } else {
-        	if (path[0] == 'ingredient') {
-				const ingredients = this.state.ingredients.map((ingredient) => {
-
-					return Object.assign({}, ingredient);
-				});
-				ingredients[index].amount = value;
-				this.setState({
-					ingredients
-				});
-			}
-			else {
-				const total = Object.assign({}, this.state.total);
-				total.quantity = value;
-				this.setState({ total });
-			}
         }
+
+        if (path[0] == 'ingredient') {
+			const ingredients = scaledRecipe.ingredients.map((ingredient) => {
+
+				return Object.assign({}, ingredient);
+			});
+			ingredients[index].amount = input.value;
+			scaledRecipe.ingredients = ingredients;
+		}
+		else {
+			const total = Object.assign({}, this.state.total);
+			total.quantity = input.value;
+			scaledRecipe.total = total;
+		}
+
+		this.setState(scaledRecipe);
 	}
 
 	handleUnitChange(event) {
