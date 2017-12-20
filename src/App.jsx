@@ -1,8 +1,7 @@
 import React from 'react';
 import RecipeList from './RecipeList.jsx';
 import Recipe from './Recipe.jsx';
-import Login from './Login.jsx';
-import Register from './Register.jsx';
+import Profile from './Profile.jsx';
 import ScaleRecipe from './ScaleRecipe.jsx';
 
 import {
@@ -13,13 +12,28 @@ import {
 } from 'react-router-dom';
 
 class App extends React.Component {
-  constructor() {
-    super();
-    fetch('/api/recipes').then((response) => {
+  constructor(props) {
+    super(props);
+    fetch('/api/recipes', {
+      credentials: 'include'
+    }).then((response) => {
       return response.json();
     }).then((recipes) => {
       this.setState({
         recipes
+      });
+    });
+
+    fetch('/api/users/current', {
+      credentials: 'include'
+    }).then((response) => {
+      if (response.status === 204) {
+        return null;
+      }
+      return response.json();
+    }).then((user) => {
+      this.setState({
+        user
       });
     });
 
@@ -33,11 +47,15 @@ class App extends React.Component {
 
   onClickDeleteRecipe(id) {
     fetch(`/api/recipes/${id}`, {
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
       method: 'DELETE'
-    }).then(() => {
+    }).then((response) => {
+      if (!response.ok) {
+        throw response;
+      }
       const recipes = this.state.recipes;
       const index = recipes.findIndex((_recipe) => {
         return _recipe.id === id;
@@ -54,6 +72,7 @@ class App extends React.Component {
     event.preventDefault();
     if ('id' in recipe) {
       return fetch(`/api/recipes/${recipe.id}`, {
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -78,6 +97,7 @@ class App extends React.Component {
     }
 
     return fetch('/api/recipes', {
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -98,7 +118,7 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.recipes) {
+    if (this.state.recipes && this.state.user !== undefined) {
       return (
         <Router>
           <Switch>
@@ -107,23 +127,29 @@ class App extends React.Component {
                 <div>
                   <h1>Kukeze</h1>
                   <h2>Create, Share and Scale Your Recipes</h2>
-                  <Link to="/recipes">Go to My Recipes</Link>
+                  {this.state.user ? <Link to="/recipes">Go to My Recipes</Link> : <Link to="/recipes">Recipes</Link>}
+                  <br/>
+                  {this.state.user ? <a href="/api/auth/logout">Logout</a> : <a href="/api/auth/google">Sign In With Google</a>}
                 </div>
               );
             }} />
-            <Route exact path="/login" component={Login}
-            />
 
-            <Route exact path="/register" component={Register}
+            <Route exact path="/profile" render={() => {
+              return (
+                <Profile
+                  user={this.state.user} />
+              );
+            }}
             />
 
             <Route exact path="/recipes" render={() => {
               return (
                 <div>
-                  <Link to="/recipes/create">Add Recipe</Link>
+                  { this.state.user ? <Link to="/recipes/create">Add Recipe</Link> : '' }
                   <RecipeList
                     recipes={this.state.recipes}
                     onClickDeleteRecipe={this.onClickDeleteRecipe}
+                    user={this.state.user}
                   />
                 </div>
               );
@@ -139,6 +165,7 @@ class App extends React.Component {
                 <Recipe
                   recipe={newRecipe}
                   onClickSaveRecipe={this.onClickSaveRecipe}
+                  user={this.state.user}
                 />
               );
             }} />
@@ -166,6 +193,7 @@ class App extends React.Component {
                   recipe={recipe}
                   onClickSaveRecipe={this.onClickSaveRecipe}
                   match={match}
+                  user={this.state.user}
                 />
               );
             }} />
