@@ -14,31 +14,32 @@ import {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    fetch('/api/recipes', {
-      credentials: 'include'
-    }).then((response) => {
-      return response.json();
-    }).then((recipes) => {
-      this.setState({
-        recipes
-      });
-    });
+    // fetch('/api/recipes', {
+    //   credentials: 'include'
+    // }).then((response) => {
+    //   return response.json();
+    // }).then((recipes) => {
+    //   this.setState({
+    //     recipes
+    //   });
+    // });
 
-    fetch('/api/users/current', {
-      credentials: 'include'
-    }).then((response) => {
-      if (response.status === 204) {
-        return null;
-      }
-      return response.json();
-    }).then((user) => {
-      this.setState({
-        user
-      });
-    });
+    // fetch('/api/users/current', {
+    //   credentials: 'include'
+    // }).then((response) => {
+    //   if (response.status === 204) {
+    //     return null;
+    //   }
+    //   return response.json();
+    // }).then((user) => {
+    //   this.setState({
+    //     user
+    //   });
+    // });
 
     this.state = {
-      recipes: null
+      recipes: this.props.recipes,
+      user: this.props.user
     };
 
     this.onClickDeleteRecipe = this.onClickDeleteRecipe.bind(this);
@@ -118,92 +119,86 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.recipes && this.state.user !== undefined) {
-      return (
-          <Switch>
-            <Route exact path="/" render={() => {
-              return (
-                <div>
-                  <h1>Kukeze</h1>
-                  <h2>Create, Share and Scale Your Recipes</h2>
-                  {this.state.user ? <Link to="/recipes">Go to My Recipes</Link> : <Link to="/recipes">Recipes</Link>}
-                  <br/>
-                  {this.state.user ? <a href="/api/auth/logout">Logout</a> : <a href="/api/auth/google">Sign In With Google</a>}
-                </div>
-              );
-            }} />
-
-            <Route exact path="/profile" render={() => {
-              return (
-                <Profile
-                  user={this.state.user} />
-              );
-            }}
-            />
-
-            <Route exact path="/recipes" render={() => {
-              return (
-                <div>
-                  { this.state.user ? <Link to="/recipes/create">Add Recipe</Link> : '' }
-                  <RecipeList
-                    recipes={this.state.recipes}
-                    onClickDeleteRecipe={this.onClickDeleteRecipe}
-                    user={this.state.user}
-                  />
-                </div>
-              );
-            }} />
-
-            <Route exact path="/recipes/create" render={() => {
-              const newRecipe = {
-                name: '',
-                ingredients: [{}]
-              };
-
-              return (
-                <Recipe
-                  recipe={newRecipe}
-                  onClickSaveRecipe={this.onClickSaveRecipe}
-                  user={this.state.user}
-                />
-              );
-            }} />
-
-
-            <Route path="/recipes/:id/scale" render={({ match }) => {
-              const recipe = this.state.recipes.find((_recipe) => {
-                return _recipe.id === match.params.id;
-              });
-              return (
-                <ScaleRecipe
-                  recipe={recipe}
-                  //onClickSaveRecipe={this.onClickSaveRecipe}
-                />
-              );
-            }} />
-            
-            <Route path="/recipes/:id" render={({ match }) => {
-              const recipe = this.state.recipes.find((_recipe) => {
-                return _recipe.id === match.params.id;
-              });
-
-              return (
-                <Recipe
-                  recipe={recipe}
-                  onClickSaveRecipe={this.onClickSaveRecipe}
-                  match={match}
-                  user={this.state.user}
-                />
-              );
-            }} />
-
-          </Switch>
-      );
-    }
-
     return (
-      <div>Loading...</div>
-    );
+        <Switch>
+          <Route exact path="/" render={() => {
+            return (
+              <div>
+                <h1>Kukeze</h1>
+                <h2>Create, Share and Scale Your Recipes</h2>
+                {this.state.user ? <Link to="/recipes">Go to My Recipes</Link> : <Link to="/recipes">Recipes</Link>}
+                <br/>
+                {this.state.user ? <a href="/api/auth/logout">Logout</a> : <a href="/api/auth/google">Sign In With Google</a>}
+              </div>
+            );
+          }} />
+
+          <Route exact path="/profile" render={() => {
+            return (
+              <Profile
+                user={this.state.user} />
+            );
+          }}
+          />
+
+          <Route exact path="/recipes" render={() => {
+            return (
+              <div>
+                { this.state.user ? <Link to="/recipes/create">Add Recipe</Link> : '' }
+                <RecipeList
+                  recipes={this.state.recipes}
+                  onClickDeleteRecipe={this.onClickDeleteRecipe}
+                  user={this.state.user}
+                />
+              </div>
+            );
+          }} />
+
+          <Route exact path="/recipes/create" render={() => {
+            const newRecipe = {
+              name: '',
+              ingredients: [{}]
+            };
+
+            return (
+              <Recipe
+                recipe={newRecipe}
+                onClickSaveRecipe={this.onClickSaveRecipe}
+                user={this.state.user}
+              />
+            );
+          }} />
+
+
+          <Route path="/recipes/:id/scale" render={({ match }) => {
+            const recipe = this.state.recipes.find((_recipe) => {
+              return _recipe.id === match.params.id;
+            });
+            return (
+              <ScaleRecipe
+                recipe={recipe}
+                //onClickSaveRecipe={this.onClickSaveRecipe}
+              />
+            );
+          }} />
+          
+          <Route path="/recipes/:id" render={({ match }) => {
+            const recipe = this.state.recipes.find((_recipe) => {
+              return _recipe.id === match.params.id;
+            });
+
+            return (
+              <Recipe
+                recipe={recipe}
+                onClickSaveRecipe={this.onClickSaveRecipe}
+                match={match}
+                user={this.state.user}
+              />
+            );
+          }} />
+
+        </Switch>
+      );
   }
 }
 

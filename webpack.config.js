@@ -8,7 +8,14 @@ var appName = 'app';
 var host = '0.0.0.0';
 var port = '9000';
 
-var plugins = [], outputFile;
+var plugins = [
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
+    'window.jQuery': 'jquery',
+    Popper: ['popper.js', 'default']
+  })
+], outputFile;
 
 if (env === 'build') {
   plugins.push(new UglifyJsPlugin({ minimize: true }));
@@ -29,7 +36,7 @@ var config = {
     loaders: [
       {
         test: /(\.jsx|\.js)$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /(node_modules|bower_components|recipe-unit-converter)/,
         query: {
           presets: ['react', 'es2015']
@@ -39,12 +46,15 @@ var config = {
         test: /(\.jsx|\.js)$/,
         loader: "eslint-loader",
         exclude: /(node_modules|recipe-unit-converter)/
-      }, { test: /\.css$/, loader: 'style-loader!css-loader' }
+      },
+      {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
+      }
     ]
   },
   resolve: {
-    root: path.resolve('./src'),
-    extensions: ['', '.js', '.jsx']
+    extensions: ['.js', '.jsx']
   },
   plugins: plugins
 };
@@ -53,7 +63,6 @@ if (env === 'dev') {
   new WebpackDevServer(webpack(config), {
     contentBase: './example',
     hot: true,
-    debug: true,
     historyApiFallback: true
   }).listen(port, host, function (err, result) {
     if (err) {
