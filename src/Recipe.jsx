@@ -42,6 +42,9 @@ class Recipe extends React.Component {
 
     const recipe = this.props.recipe;
     const ingredients = recipe.ingredients.map((ingredient, index) => {
+      if (!ingredient) {
+        return;
+      }
       return (
         <li key={index}> {ingredient.amount} {ingredient.unit || ''} {ingredient.name}</li>
       );

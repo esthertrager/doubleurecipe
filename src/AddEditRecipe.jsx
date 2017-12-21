@@ -55,6 +55,9 @@ class AddEditRecipe extends React.Component {
 
 	renderIngredients() {
 		return this.state.ingredients.map((ingredient, index) => {
+			if (!ingredient) {
+				return;
+			}
 			return (
 				<div className="form-row form-group" key={index}>
 					<div className="form-group col-3">

@@ -5,8 +5,8 @@
     "hostnames": ["*"],
      "routes": {
         "/": "http://localhost:3001/",
-        "/api": "http://192.34.60.247:3000/",
-        "/auth": "http://192.34.60.247:3000/auth"
+        "/api": "http://localhost:3000/",
+        "/auth": "http://localhost:3000/auth"
      }
  	}]
 }

@@ -120,7 +120,6 @@ class App extends React.Component {
   render() {
     if (this.state.recipes && this.state.user !== undefined) {
       return (
-        <Router>
           <Switch>
             <Route exact path="/" render={() => {
               return (
@@ -199,7 +198,6 @@ class App extends React.Component {
             }} />
 
           </Switch>
-        </Router>
       );
     }
 

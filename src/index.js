@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import LayoutContainer from './LayoutContainer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 window.onload = () => {
   ReactDOM.render(
-    <App />,
+    <LayoutContainer />,
     document.querySelector('#container')
   );
 };
