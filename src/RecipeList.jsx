@@ -7,8 +7,8 @@ class RecipeList extends React.Component {
 
   		return (
 	      	<li key={recipe.id}>
-            <Link to={`/recipes/${recipe.id}`}>{recipe.name} </Link>by {recipe.owner}
-            { this.props.user && this.props.user.name === recipe.owner ? <button className="btn btn-sm" onClick={() => this.props.onClickDeleteRecipe(recipe.id)}>-</button> : '' }
+            <Link to={`/recipes/${recipe.id}`}>{recipe.name} </Link>by {recipe.owner.name}
+            { this.props.user && this.props.user._id === recipe.owner._id ? <button className="btn btn-sm" onClick={() => this.props.onClickDeleteRecipe(recipe.id)}>-</button> : '' }
           </li>
 	    );
   	});
