@@ -33,7 +33,7 @@ class Profile extends React.Component {
 			}
 		  return response.json();
 		}).then((user) => {
-		  console.log('User Saved', user);
+		  window.location.assign('/recipes');
 		}, (error) => {
 			error.then(e => alert(e));
 		});

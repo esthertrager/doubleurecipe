@@ -2,6 +2,7 @@
 
 rm -rf dist
 mkdir dist
+./node_modules/.bin/webpack --config=webpack.build.config.js
 cp -r server example lib package.json dist/
 cd dist
 npm install --production
