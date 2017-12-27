@@ -190,6 +190,7 @@ class ScaleRecipe extends React.Component {
 							  <option value="pnt">pints</option>
 							  <option value="qt">quarts</option>
 							  <option value="gal">gallons</option>
+							  <option value="lb">lb</option>
 							  <option value="l">litres</option>
 							  <option value="ml">millilitres</option>
 							  <option value="g">grams</option>
@@ -249,6 +250,7 @@ class ScaleRecipe extends React.Component {
 						    name={`total_unit`}
 						    onChange={this.handleTotalUnitChange}>
 						  <option value=""></option>
+						  <option value="">servings</option>
 						  <option value="smidgen">smidgen</option>
 						  <option value="pinch">pinch</option>
 						  <option value="dash">dash</option>
@@ -260,6 +262,7 @@ class ScaleRecipe extends React.Component {
 						  <option value="pnt">pints</option>
 						  <option value="qt">quarts</option>
 						  <option value="gal">gallons</option>
+						  <option value="lb">lb</option>
 						  <option value="l">litres</option>
 						  <option value="ml">millilitres</option>
 						  <option value="g">grams</option>

@@ -47,6 +47,7 @@
     "popper.js": "^1.12.9",
     "react": "^15.2.0",
     "react-addons-test-utils": "^15.2.0",
+    "react-autocomplete": "^1.7.2",
     "react-dom": "^15.2.0",
     "react-router-dom": "^4.2.2",
     "recipe-unit-converter": "^2.3.1",

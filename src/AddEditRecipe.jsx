@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactAutocomplete from 'react-autocomplete';
 
 class AddEditRecipe extends React.Component {
 	constructor(props) {
@@ -17,10 +18,7 @@ class AddEditRecipe extends React.Component {
     	});
     }
 
-	handleInputChange(event) {
-	    const target = event.target;
-        const value = target.value;
-        const name = target.name;
+	handleInputChange(value, name) {
 
         const path = name.split('_');
 
@@ -71,31 +69,66 @@ class AddEditRecipe extends React.Component {
 						    type="text"
 						    value={ingredient.amount || ''} />
 					</div>
+
 					<div className="form-group col-4">
 						{index === 0 ? <label htmlFor={`ingredient_unit_${index}`}>Unit</label> : ''}
-						<select value={ingredient.unit}
-							className="form-control" 
-							id={`ingredient_unit_${index}`}
-					    name={`ingredient_unit_${index}`}
-					    onChange={this.handleInputChange}>
-							  <option value=""></option>
-							  <option value="smidgen">smidgen</option>
-							  <option value="pinch">pinch</option>
-							  <option value="dash">dash</option>
-							  <option value="tad">tad</option>
-							  <option value="tsp">tsp</option>
-							  <option value="Tbs">Tbs</option>
-							  <option value="fl-oz">fl-oz</option>
-							  <option value="cup">cups</option>
-							  <option value="pnt">pints</option>
-							  <option value="qt">quarts</option>
-							  <option value="gal">gallons</option>
-							  <option value="l">litres</option>
-							  <option value="ml">millilitres</option>
-							  <option value="g">grams</option>
-							  <option value="mg">milligrams</option>
-							  <option value="kg">kilograms</option>
-						</select>
+					<ReactAutocomplete
+				        items={[
+				          { id: '', label: '' },
+						  { id: 'smidgen', label: 'smidgen' },
+						  { id: 'pinch', label: 'pinch' },
+						  { id: 'dash', label: 'dash' },
+						  { id: 'tad', label: 'tad' },
+						  { id: 'tsp', label: 'tsp' },
+						  { id: 'Tbs', label: 'Tbs' },
+						  { id: 'fl-oz', label: 'fl-oz' },
+						  { id: 'cup', label: 'cups' },
+						  { id: 'pnt', label: 'pints' },
+						  { id: 'qt', label: 'quarts' },
+						  { id: 'gal', label: 'gallons' },
+						  { id: 'lb', label: 'lb' },
+						  { id: 'l', label: 'litres' },
+						  { id: 'ml', label: 'millilitres' },
+						  { id: 'g', label: 'grams' },
+						  { id: 'mg', label: 'milligrams' },
+						  { id: 'kg', label: 'kilograms' },
+				        ]}
+				        shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
+				        getItemValue={item => item.label}
+				        value={ingredient.unit}
+				        inputProps={{
+				        	className: 'form-control'
+				        }}
+				        onChange={e => this.handleInputChange(e.target.value, `ingredient_unit_${index}`)}
+				        onSelect={(value, item) => this.handleInputChange(value, `ingredient_unit_${index}`)}
+				        wrapperStyle={{
+				        	position: 'relative'
+				        }}
+				        renderMenu={children => (
+				            <div 
+				            className="menu"
+				            style={{
+								  position: 'absolute',
+								  boxSizing: 'border-box',
+								  width: '100%',
+								  border: '1px solid #cccccc'
+								}}>
+				              {children}
+				            </div>
+				        )}
+						renderItem={(item, isHighlighted) => (
+							<div
+							  className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
+							  style={{
+								  padding: '2px 6px',
+								  cursor: 'default',
+								  color: `${isHighlighted ? 'white' : 'inherit'}`,
+								  backgroundColor: `${isHighlighted ? '#4095bf' : 'inherit'}`
+								}}
+							  key={item.id}
+							>{item.label}</div>
+						)}
+				    />
 					</div>
 					<div className="form-group col-5">
 					    {index === 0 ? <label htmlFor={`ingredient_name_${index}`}>Name</label> : ''}
@@ -135,12 +168,13 @@ class AddEditRecipe extends React.Component {
 				  <div className="row">
 				  	<div className="col-12">
 				  		<h4>Ingredients</h4>
-				  		<button
-				  			className="btn"
-				  			onClick={(event) => this.onClickAddIngredient(event)}>+ Add Ingredient</button>
+				  		
 				  	</div>
 				  </div>
 				  {this.renderIngredients()}
+				  <button
+				  			className="btn"
+				  			onClick={(event) => this.onClickAddIngredient(event)}>+ Add Ingredient</button>
 				  <h4>Yield</h4>
 				  <div className="form-row form-group">
 					  <div className="form-group col-4">
@@ -163,6 +197,7 @@ class AddEditRecipe extends React.Component {
 						    name={`total_unit`}
 						    onChange={this.handleInputChange}>
 						  <option value=""></option>
+						  <option value="servings">servings</option>
 						  <option value="smidgen">smidgen</option>
 						  <option value="pinch">pinch</option>
 						  <option value="dash">dash</option>
@@ -174,6 +209,7 @@ class AddEditRecipe extends React.Component {
 						  <option value="pnt">pints</option>
 						  <option value="qt">quarts</option>
 						  <option value="gal">gallons</option>
+						  <option value="lb">lb</option>
 						  <option value="l">litres</option>
 						  <option value="ml">millilitres</option>
 						  <option value="g">grams</option>
@@ -181,19 +217,6 @@ class AddEditRecipe extends React.Component {
 						  <option value="kg">kilograms</option>
 						</select>
 					</div>
-					{/*
-					  <div className="form-group col-4">
-					    <label htmlFor="name">Unit</label>
-					    <input
-						    className="form-control"
-						    id="total_unit"
-						    name="total_unit"
-						    onChange={this.handleInputChange}
-						    placeholder="Unit"
-						    type="text"
-						    value={total.unit || ''} />
-					  </div>
-					  */}
 					</div>
 				  <div className="form-group">
 				    <label htmlFor="name">Directions</label>
