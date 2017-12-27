@@ -24,7 +24,6 @@ class Recipe extends React.Component {
 
   onClickSaveRecipe(e, recipe) {
     e.preventDefault();
-    recipe.owner = this.props.user.name;
     this.props.onClickSaveRecipe(e, recipe)
       .then((_recipe) => {
         window.location.assign(`${_recipe.id}`);
@@ -58,7 +57,7 @@ class Recipe extends React.Component {
 	    	<ul>{ingredients}</ul>
         <div>{total.quantity} {total.unit}</div>
         <div>{recipe.directions}</div>
-        {this.props.user && this.props.user.name === this.props.recipe.owner ? 
+        {this.props.user && this.props.user._id === this.props.recipe.owner._id ? 
           <button className="btn" onClick={this.onClickAddEditRecipe}>Edit Recipe</button> : '' }
         <Link to={`${this.props.match.url}/scale`}>Scale Recipe</Link>
 	    </div>
