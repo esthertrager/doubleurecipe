@@ -155,8 +155,33 @@ class ScaleRecipe extends React.Component {
 		});
 	}
 
+	renderOptions(value, amount) {
+		const volumeUnits = ['smidgen', 'pinch', 'dash', 'tad', 'tsp', 'Tbs', 'fl-oz', 'cup', 'pnt', 'qt', 'gal', 'l', 'ml'];
+		const massUnits = ['oz', 'lb', 'g', 'mg', 'kg'];
+		const nounType = parseInt(amount) === 1 ? 'singular' : 'plural';
+
+		if (massUnits.indexOf(value) !== -1) {
+			return massUnits.map((unit) => {
+				const unitDescription = convert().describe(unit);
+				return (
+					<option value={unit}>{unitDescription[nounType]}</option>
+				)
+			});
+		} else if (volumeUnits.indexOf(value) !== -1) {
+			return volumeUnits.map((unit) => {
+				const unitDescription = convert().describe(unit);
+				return (
+					<option value={unit}>{unitDescription[nounType]}</option>
+				)
+			});
+		}
+	}
+
 	renderIngredients() {
 		return this.state.ingredients.map((ingredient, index) => {
+			if (!ingredient) {
+				return null;
+			}
 			return (
 				<div className="form-row form-group" key={index}>
 					<div className="form-group col-3">
@@ -176,32 +201,18 @@ class ScaleRecipe extends React.Component {
 							value={ingredient.unit}
 							className="form-control" 
 							id={`ingredient_unit_${index}`}
-						  name={`ingredient_unit_${index}`}
-						  onChange={this.handleUnitChange}>
-							  <option value=""></option>
-							  <option value="smidgen">smidgen</option>
-							  <option value="pinch">pinch</option>
-							  <option value="dash">dash</option>
-							  <option value="tad">tad</option>
-							  <option value="tsp">tsp</option>
-							  <option value="Tbs">Tbs</option>
-							  <option value="fl-oz">fl-oz</option>
-							  <option value="cup">cups</option>
-							  <option value="pnt">pints</option>
-							  <option value="qt">quarts</option>
-							  <option value="gal">gallons</option>
-							  <option value="lb">lb</option>
-							  <option value="l">litres</option>
-							  <option value="ml">millilitres</option>
-							  <option value="g">grams</option>
-							  <option value="mg">milligrams</option>
-							  <option value="kg">kilograms</option>
+						  	name={`ingredient_unit_${index}`}
+						  	onChange={this.handleUnitChange}>
+						  	{this.renderOptions(ingredient.unit, ingredient.amount)}
+
+							  
+							  
 						</select>
 					</div>
 					<div className="form-group col-5">
 					    {index === 0 ? <label htmlFor={`ingredient_name_${index}`}>Name</label> : ''}
 					    <input
-					 			readOnly
+					 		readOnly
 						    className="form-control"
 						    id={`ingredient_name_${index}`}
 						    name={`ingredient_name_${index}`}
@@ -249,25 +260,7 @@ class ScaleRecipe extends React.Component {
 							id={`total_unit`}
 						    name={`total_unit`}
 						    onChange={this.handleTotalUnitChange}>
-						  <option value=""></option>
-						  <option value="">servings</option>
-						  <option value="smidgen">smidgen</option>
-						  <option value="pinch">pinch</option>
-						  <option value="dash">dash</option>
-						  <option value="tad">tad</option>
-						  <option value="tsp">tsp</option>
-						  <option value="Tbs">Tbs</option>
-						  <option value="fl-oz">fl-oz</option>
-						  <option value="cup">cups</option>
-						  <option value="pnt">pints</option>
-						  <option value="qt">quarts</option>
-						  <option value="gal">gallons</option>
-						  <option value="lb">lb</option>
-						  <option value="l">litres</option>
-						  <option value="ml">millilitres</option>
-						  <option value="g">grams</option>
-						  <option value="mg">milligrams</option>
-						  <option value="kg">kilograms</option>
+						  {this.renderOptions(total.unit, total.quantity)}
 						</select>
 					</div>
 					</div>

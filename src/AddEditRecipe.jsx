@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactAutocomplete from 'react-autocomplete';
+import convert from 'recipe-unit-converter';
 
 class AddEditRecipe extends React.Component {
 	constructor(props) {
       super(props);
       this.state = props.recipe;
       this.handleInputChange = this.handleInputChange.bind(this);
+      this.onClickSaveRecipe = this.onClickSaveRecipe.bind(this);
     }
 
     onClickAddIngredient(event) {
@@ -58,6 +60,7 @@ class AddEditRecipe extends React.Component {
 			}
 			const amountInputName = `ingredient_amount_${index}`;
 			const unitInputName = `ingredient_unit_${index}`;
+			let zIndex = 1029;
 			return (
 				<div className="form-row form-group" key={index}>
 					<div className="form-group col-3">
@@ -66,12 +69,12 @@ class AddEditRecipe extends React.Component {
 						    className="form-control"
 						    id={amountInputName}
 						    name={amountInputName}
-						    onChange={this.handleInputChange}
+						    onChange={e => this.handleInputChange(e.target.value, e.target.name)}
 						    placeholder="Quantity"
 						    type="text"
 						    value={ingredient.amount || ''} />
 					</div>
-					<div className="form-group col-4" style={{zIndex:999, backgroundColor:'white'}}>
+					<div className="form-group col-4" style={{zIndex:1029 - index, backgroundColor:'white'}}>
 						{index === 0 ? <label>Unit</label> : ''}
 					{this.renderUnitField(ingredient.unit, unitInputName)}
 					</div>
@@ -82,7 +85,7 @@ class AddEditRecipe extends React.Component {
 					    <input
 						    className="form-control"
 						    id={`ingredient_name_${index}`}
-						    onChange={this.handleInputChange}
+						    onChange={e => this.handleInputChange(e.target.value, e.target.name)}
 						    name={`ingredient_name_${index}`}
 						    placeholder="Name"
 						    type="text"
@@ -93,68 +96,87 @@ class AddEditRecipe extends React.Component {
 		});
 	}
 
+	onClickSaveRecipe(event, recipe) {
+		event.preventDefault();
+
+		const allUnits = [...convert().list('mass'), ...convert().list('volume')]
+			.reduce((map, unit) => {
+				map[unit.singular.toLowerCase()] = unit.abbr;
+				map[unit.plural.toLowerCase()] = unit.abbr;
+				map[unit.abbr.toLowerCase()] = unit.abbr;
+				return map
+			}, {});
+
+		recipe.ingredients = recipe.ingredients
+			.filter((ingredient) => {
+				return ingredient && (ingredient.unit || ingredient.amount || ingredient.name)
+			})
+			.map((ingredient) => {
+				if (!ingredient) {
+					return null;
+				}
+				const ingredientWithAbbr = Object.assign({}, ingredient);
+				ingredientWithAbbr.unit = allUnits[ingredientWithAbbr.unit.toLowerCase()];
+				
+				return ingredientWithAbbr;
+			});
+		recipe.total.unit= allUnits[recipe.total.unit.toLowerCase()];
+
+		this.props.onClickSaveRecipe(event, recipe)
+
+	}
+
 	renderUnitField(unitValue, inputName) {
+		const items = [...convert().list('mass'), ...convert().list('volume')]
+			.map((unit) => {
+				return {
+					id: unit.abbr,
+					label: unit.plural
+				}
+			})
+
 		return (
 			<ReactAutocomplete
-				        items={[
-				          { id: '', label: '' },
-						  { id: 'smidgen', label: 'smidgen' },
-						  { id: 'pinch', label: 'pinch' },
-						  { id: 'dash', label: 'dash' },
-						  { id: 'tad', label: 'tad' },
-						  { id: 'tsp', label: 'tsp' },
-						  { id: 'Tbs', label: 'Tbs' },
-						  { id: 'fl-oz', label: 'fl-oz' },
-						  { id: 'cup', label: 'cups' },
-						  { id: 'pnt', label: 'pints' },
-						  { id: 'qt', label: 'quarts' },
-						  { id: 'gal', label: 'gallons' },
-						  { id: 'lb', label: 'lb' },
-						  { id: 'l', label: 'litres' },
-						  { id: 'ml', label: 'millilitres' },
-						  { id: 'g', label: 'grams' },
-						  { id: 'mg', label: 'milligrams' },
-						  { id: 'kg', label: 'kilograms' },
-				        ]}
-				        shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
-				        getItemValue={item => item.label}
-				        value={unitValue}
-				        inputProps={{
-				        	className: 'form-control'
-				        }}
-				        onChange={e => this.handleInputChange(e.target.value, inputName)}
-				        onSelect={(value, item) => this.handleInputChange(value, inputName)}
-				        wrapperStyle={{
-				        	position: 'relative'
-				        }}
-				        renderMenu={children => (
-				            <div 
-				            className="menu"
-				            style={{
-								  position: 'absolute',
-								  boxSizing: 'border-box',
-								  width: '100%',
-								  border: '1px solid #cccccc',
-								  zIndex:9999,
-								  backgroundColor: 'white'
-								}}>
-				              {children}
-				            </div>
-				        )}
-						renderItem={(item, isHighlighted) => (
-							<div
-							  className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
-							  style={{
-								  padding: '2px 6px',
-								  cursor: 'default',
-								  color: `${isHighlighted ? 'white' : 'inherit'}`,
-								  backgroundColor: `${isHighlighted ? '#4095bf' : 'inherit'}`
-								}}
-							  key={item.id}
-							>{item.label}</div>
-						)}
-				    />
-				)
+		        items={items}
+		        shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
+		        getItemValue={item => item.label}
+		        value={unitValue}
+		        inputProps={{
+		        	className: 'form-control'
+		        }}
+		        onChange={e => this.handleInputChange(e.target.value, inputName)}
+		        onSelect={(value, item) => this.handleInputChange(value, inputName)}
+		        wrapperStyle={{
+		        	position: 'relative'
+		        }}
+		        renderMenu={children => (
+		            <div 
+		            className="menu"
+		            style={{
+						  position: 'absolute',
+						  boxSizing: 'border-box',
+						  width: '100%',
+						  border: '1px solid #cccccc',
+						  zIndex:9999,
+						  backgroundColor: 'white'
+						}}>
+		              {children}
+		            </div>
+		        )}
+				renderItem={(item, isHighlighted) => (
+					<div
+					  className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
+					  style={{
+						  padding: '2px 6px',
+						  cursor: 'default',
+						  color: `${isHighlighted ? 'white' : 'inherit'}`,
+						  backgroundColor: `${isHighlighted ? '#4095bf' : 'inherit'}`
+						}}
+					  key={item.id}
+					>{item.label}</div>
+				)}
+			/>
+		);
 	}
 
   	render() {
@@ -171,7 +193,7 @@ class AddEditRecipe extends React.Component {
 					    id="name"
 					    name="name"
 					    // this is equivalent to onChange={(e) => this.handleInputChange(e)}
-					    onChange={this.handleInputChange}
+					    onChange={e => this.handleInputChange(e.target.value, e.target.name)}
 					    placeholder="Recipe Name"
 					    type="text"
 					    value={this.state.name} />
@@ -194,7 +216,7 @@ class AddEditRecipe extends React.Component {
 						    className="form-control"
 						    id="total_quantity"
 						    name="total_quantity"
-						    onChange={this.handleInputChange}
+						    onChange={e => this.handleInputChange(e.target.value, e.target.name)}
 						    placeholder="Quantity"
 						    type="text"
 						    value={total.quantity || ''} />
@@ -212,13 +234,13 @@ class AddEditRecipe extends React.Component {
 					    id="directions"
 					    name="directions"
 					    rows="5"
-					    onChange={this.handleInputChange}
+					    onChange={e => this.handleInputChange(e.target.value, e.target.name)}
 					    placeholder="Directions"
 					    value={this.state.directions || ''} />
 				  </div>
 				  <button
 				  	className="btn"
-				  	onClick={(event) => this.props.onClickSaveRecipe(event, this.state)}>Save Recipe</button>
+				  	onClick={(event) => this.onClickSaveRecipe(event, this.state)}>Save Recipe</button>
 				</form>
 			</div>
 	  	);
