@@ -164,16 +164,20 @@ class ScaleRecipe extends React.Component {
 			return massUnits.map((unit) => {
 				const unitDescription = convert().describe(unit);
 				return (
-					<option value={unit}>{unitDescription[nounType]}</option>
+					<option key={unit} value={unit}>{unitDescription[nounType]}</option>
 				)
 			});
 		} else if (volumeUnits.indexOf(value) !== -1) {
 			return volumeUnits.map((unit) => {
 				const unitDescription = convert().describe(unit);
 				return (
-					<option value={unit}>{unitDescription[nounType]}</option>
+					<option key={unit} value={unit}>{unitDescription[nounType]}</option>
 				)
 			});
+		} else {
+			return (
+				<option>{value}</option>
+			)
 		}
 	}
 

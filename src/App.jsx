@@ -3,6 +3,7 @@ import RecipeList from './RecipeList.jsx';
 import Recipe from './Recipe.jsx';
 import Profile from './Profile.jsx';
 import ScaleRecipe from './ScaleRecipe.jsx';
+// import Home from 'Home.jsx';
 
 import {
   BrowserRouter as Router,
@@ -128,7 +129,9 @@ class App extends React.Component {
                 <h2>Create, Share and Scale Your Recipes</h2>
                 {this.state.user ? <Link to="/recipes">Go to My Recipes</Link> : <Link to="/recipes">Recipes</Link>}
                 <br/>
-                {this.state.user ? <a href="/api/auth/logout">Logout</a> : <a href="/api/auth/google">Sign In With Google</a>}
+                {this.state.user ? <a href="/api/auth/logout">Logout</a> : <div><a href="/api/auth/google"><img src="loginGoogle.png" style={{ height: '40px' }} /></a>
+                <br/>
+                <a href="/api/auth/facebook"><img src="loginfb.png" style={{ height: '40px' }} /></a></div>}
               </div>
             );
           }} />

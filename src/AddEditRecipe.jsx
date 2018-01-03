@@ -116,7 +116,7 @@ class AddEditRecipe extends React.Component {
 					return null;
 				}
 				const ingredientWithAbbr = Object.assign({}, ingredient);
-				ingredientWithAbbr.unit = allUnits[ingredientWithAbbr.unit.toLowerCase()];
+				ingredientWithAbbr.unit = allUnits[ingredientWithAbbr.unit.toLowerCase()] || ingredientWithAbbr.unit;
 				
 				return ingredientWithAbbr;
 			});
