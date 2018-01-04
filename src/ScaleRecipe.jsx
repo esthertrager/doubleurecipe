@@ -11,10 +11,17 @@ class ScaleRecipe extends React.Component {
     }
 
     scale(scalingFactor) {
-    	const scaledIngredients = this.props.recipe.ingredients.map((ingredient) => {
+    	const scaledIngredients = this.props.recipe.ingredients.map((ingredient, index) => {
         const ingredientCopy = Object.assign({}, ingredient);
         	ingredientCopy.amount = scalingFactor * parseFloat(ingredientCopy.amount);
-        	ingredientCopy.amount = +ingredientCopy.amount.toFixed(2);
+
+        	if (this.props.recipe.ingredients[index].unit !== this.state.ingredients[index].unit) {
+        		const unitScalingFactor = convert(1).from(this.state.ingredients[index].unit).to(this.props.recipe.ingredients[index].unit);
+        		ingredientCopy.amount = unitScalingFactor * parseFloat(ingredientCopy.amount);
+        		ingredientCopy.unit = this.state.ingredients[index].unit;
+        	}
+
+        ingredientCopy.amount = +ingredientCopy.amount.toFixed(2);
         	
         	return ingredientCopy;
         });
