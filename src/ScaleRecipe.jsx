@@ -16,7 +16,7 @@ class ScaleRecipe extends React.Component {
         	ingredientCopy.amount = scalingFactor * parseFloat(ingredientCopy.amount);
 
         	if (this.props.recipe.ingredients[index].unit !== this.state.ingredients[index].unit) {
-        		const unitScalingFactor = convert(1).from(this.state.ingredients[index].unit).to(this.props.recipe.ingredients[index].unit);
+        		const unitScalingFactor = convert(1).from(this.props.recipe.ingredients[index].unit).to(this.state.ingredients[index].unit);
         		ingredientCopy.amount = unitScalingFactor * parseFloat(ingredientCopy.amount);
         		ingredientCopy.unit = this.state.ingredients[index].unit;
         	}
@@ -28,6 +28,13 @@ class ScaleRecipe extends React.Component {
 
         const scaledTotal = Object.assign({}, this.props.recipe.total);
         scaledTotal.quantity = scaledTotal.quantity * parseFloat(scalingFactor);
+
+		if (this.props.recipe.total.unit !== this.state.total.unit) {
+    		const unitScalingFactor = convert(1).from(this.props.recipe.total.unit).to(this.state.total.unit);
+    		scaledTotal.quantity = unitScalingFactor * parseFloat(scaledTotal.quantity);
+    		scaledTotal.unit = this.state.total.unit;
+    	}
+
         scaledTotal.quantity = +scaledTotal.quantity.toFixed(2);
 
         return {
@@ -82,29 +89,25 @@ class ScaleRecipe extends React.Component {
 	}
 
 	renderOptions(value, amount) {
-		const volumeUnits = ['smidgen', 'pinch', 'dash', 'tad', 'tsp', 'Tbs', 'fl-oz', 'cup', 'pnt', 'qt', 'gal', 'l', 'ml'];
-		const massUnits = ['oz', 'lb', 'g', 'mg', 'kg'];
-		const nounType = parseInt(amount) === 1 ? 'singular' : 'plural';
+		const allUnitPossibilities = convert().possibilities();
 
-		if (massUnits.indexOf(value) !== -1) {
-			return massUnits.map((unit) => {
-				const unitDescription = convert().describe(unit);
-				return (
-					<option key={unit} value={unit}>{unitDescription[nounType]}</option>
-				)
-			});
-		} else if (volumeUnits.indexOf(value) !== -1) {
-			return volumeUnits.map((unit) => {
-				const unitDescription = convert().describe(unit);
-				return (
-					<option key={unit} value={unit}>{unitDescription[nounType]}</option>
-				)
-			});
-		} else {
+		if (allUnitPossibilities.indexOf(value) === -1) {
 			return (
 				<option>{value}</option>
-			)
+			);
 		}
+		
+		const nounType = parseInt(amount) === 1 ? 'singular' : 'plural';
+		const unitDescription = convert().describe(value);
+		const unitType = unitDescription.measure;
+		const unitPossibilities = convert().possibilities(unitType);
+		return unitPossibilities.map((unit) => {
+			const unitDescribe = convert().describe(unit);
+			
+			return (
+				<option key={unit} value={unit}>{unitDescribe[nounType]}</option>
+			)
+		});
 	}
 
 	renderIngredients() {
@@ -205,7 +208,6 @@ class ScaleRecipe extends React.Component {
 					    placeholder="Directions"
 					    value={this.state.directions || ''} />
 				  </div>
-				  <button className="btn">View</button>
 				</form>
 			</div>
 	  	);
