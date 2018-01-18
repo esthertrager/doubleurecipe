@@ -1,67 +1,29 @@
-'use strict';
 import React from 'react';
 import convert from 'recipe-unit-converter';
-import MakeRecipe from './MakeRecipe';
-import { Link } from 'react-router-dom';
 
-class ScaleRecipe extends React.Component {
+class MakeRecipe extends React.Component {
 	constructor(props) {
       super(props);
       this.state = Object.assign({}, props.recipe);
-      this.handleIngredientChange = this.handleIngredientChange.bind(this);
-      this.handleTotalChange = this.handleTotalChange.bind(this);
     }
 
-    scale(scalingFactor) {
-    	const scaledIngredients = this.props.recipe.ingredients.map((ingredient, index) => {
-        const ingredientCopy = Object.assign({}, ingredient);
-        	ingredientCopy.amount = scalingFactor * parseFloat(ingredientCopy.amount);
-
-        	if (this.props.recipe.ingredients[index].unit !== this.state.ingredients[index].unit) {
-        		const unitScalingFactor = convert(1).from(this.props.recipe.ingredients[index].unit).to(this.state.ingredients[index].unit);
-        		ingredientCopy.amount = unitScalingFactor * parseFloat(ingredientCopy.amount);
-        		ingredientCopy.unit = this.state.ingredients[index].unit;
-        	}
-
-        ingredientCopy.amount = +ingredientCopy.amount.toFixed(2);
-        	
-        	return ingredientCopy;
-        });
-
-        const scaledTotal = Object.assign({}, this.props.recipe.total);
-        scaledTotal.quantity = scaledTotal.quantity * parseFloat(scalingFactor);
-
-		if (this.props.recipe.total.unit !== this.state.total.unit) {
-    		const unitScalingFactor = convert(1).from(this.props.recipe.total.unit).to(this.state.total.unit);
-    		scaledTotal.quantity = unitScalingFactor * parseFloat(scaledTotal.quantity);
-    		scaledTotal.unit = this.state.total.unit;
-    	}
-
-        scaledTotal.quantity = +scaledTotal.quantity.toFixed(2);
-
-        return {
-        	ingredients: scaledIngredients,
-        	total: scaledTotal
-        };
-    }
-
-	handleIngredientChange(inputAmount, unit, index) {
+    handleIngredientChange(inputAmount, unit, index) {
      	const amount = parseFloat(inputAmount);
         let scaledRecipe = Object.assign({}, this.state);
-
+        let newAmount;
         if (!isNaN(amount) && amount > 0) {
         	const oldValue = this.props.recipe.ingredients[index].amount;
 		    const amountScalingFactor = amount / oldValue;
-		    const unitScalingFactor = convert(1).from(unit).to(this.props.recipe.ingredients[index].unit);
-
-		    scaledRecipe = this.scale(amountScalingFactor * unitScalingFactor);
+		    const unitScalingFactor = convert(1).from(this.props.recipe.ingredients[index].unit).to(unit);
+		    newAmount = unitScalingFactor * this.props.recipe.ingredients[index].amount;
+		    newAmount = +newAmount.toFixed(2);
         }
 
         const ingredients = scaledRecipe.ingredients.map((ingredient) => {
 			return Object.assign({}, ingredient);
 		});
 
-		ingredients[index].amount = inputAmount;
+		ingredients[index].amount = newAmount;
 		ingredients[index].unit = unit;
 		scaledRecipe.ingredients = ingredients;
 
@@ -71,17 +33,19 @@ class ScaleRecipe extends React.Component {
 	handleTotalChange(inputAmount, unit) {
      	const amount = parseFloat(inputAmount);
         let scaledRecipe = Object.assign({}, this.state);
+        let newAmount;
 
         if (!isNaN(amount) && amount > 0) {
         	const oldValue = this.props.recipe.total.quantity;
 		    const amountScalingFactor = amount / oldValue;
-		    const unitScalingFactor = convert(1).from(unit).to(this.props.recipe.total.unit);
-
-		    scaledRecipe = this.scale(amountScalingFactor * unitScalingFactor);
+		    const unitScalingFactor = convert(1).from(this.props.recipe.total.unit).to(unit);
+		    newAmount = unitScalingFactor * this.props.recipe.total.quantity;
+		    newAmount = +newAmount.toFixed(2);
+		    
         }
 
 		const total = {
-			quantity: inputAmount,
+			quantity: newAmount,
 			unit: unit
 		};
 
@@ -90,7 +54,7 @@ class ScaleRecipe extends React.Component {
 		this.setState(scaledRecipe);
 	}
 
-	renderOptions(value, amount) {
+    renderOptions(value, amount) {
 		const allUnitPossibilities = convert().possibilities();
 
 		if (allUnitPossibilities.indexOf(value) === -1) {
@@ -112,7 +76,7 @@ class ScaleRecipe extends React.Component {
 		});
 	}
 
-	renderIngredients() {
+    renderIngredients() {
 		return this.state.ingredients.map((ingredient, index) => {
 			if (!ingredient) {
 				return null;
@@ -121,11 +85,10 @@ class ScaleRecipe extends React.Component {
 				<div className="form-row form-group" key={index}>
 					<div className="form-group col-3">
 					    {index === 0 ? <label htmlFor={`ingredient_amount_${index}`}>Quantity</label> : ''}
-					    <input
+					    <input readOnly
 						    className="form-control"
 						    id={`ingredient_amount_${index}`}
 						    name={`ingredient_amount_${index}`}
-						    onChange={(e) => this.handleIngredientChange(e.target.value, ingredient.unit, index)}
 						    placeholder="Quantity"
 						    type="text"
 						    value={this.state.ingredients[index].amount || ''} />
@@ -160,7 +123,7 @@ class ScaleRecipe extends React.Component {
 		});
 	}
 
-  	render() {
+    render() {
   		const total = this.state.total || {};
 
 	  	return (
@@ -178,11 +141,10 @@ class ScaleRecipe extends React.Component {
 				  <div className="form-row form-group">
 					  <div className="form-group col-4">
 					    <label htmlFor="name">Quantity</label>
-					    <input
+					    <input readOnly
 						    className="form-control"
 						    id="total_quantity"
 						    name="total_quantity"
-						    onChange={(e) => this.handleTotalChange(e.target.value, total.unit)}
 						    placeholder="Quantity"
 						    type="text"
 						    value={total.quantity || ''} />
@@ -211,10 +173,11 @@ class ScaleRecipe extends React.Component {
 					    value={this.state.directions || ''} />
 				  </div>
 				</form>
-				<Link to={`/recipes/${this.props.recipe.id}/make`} className="btn btn-primary">Make It</Link>
 			</div>
 	  	); 	
     }
 }
 
-export default ScaleRecipe;
+
+
+export default MakeRecipe;

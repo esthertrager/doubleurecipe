@@ -3,7 +3,7 @@ import RecipeList from './RecipeList.jsx';
 import Recipe from './Recipe.jsx';
 import Profile from './Profile.jsx';
 import ScaleRecipe from './ScaleRecipe.jsx';
-// import Home from 'Home.jsx';
+import MakeRecipe from './MakeRecipe.jsx';
 
 import {
   BrowserRouter as Router,
@@ -15,28 +15,6 @@ import {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    // fetch('/api/recipes', {
-    //   credentials: 'include'
-    // }).then((response) => {
-    //   return response.json();
-    // }).then((recipes) => {
-    //   this.setState({
-    //     recipes
-    //   });
-    // });
-
-    // fetch('/api/users/current', {
-    //   credentials: 'include'
-    // }).then((response) => {
-    //   if (response.status === 204) {
-    //     return null;
-    //   }
-    //   return response.json();
-    // }).then((user) => {
-    //   this.setState({
-    //     user
-    //   });
-    // });
 
     this.state = {
       recipes: this.props.recipes,
@@ -172,6 +150,16 @@ class App extends React.Component {
             );
           }} />
 
+          <Route path="/recipes/:id/make" render={({ match }) => {
+            const recipe = this.state.recipes.find((_recipe) => {
+              return _recipe.id === match.params.id;
+            });
+            return (
+              <MakeRecipe
+                recipe={recipe}
+              />
+            );
+          }} />
 
           <Route path="/recipes/:id/scale" render={({ match }) => {
             const recipe = this.state.recipes.find((_recipe) => {
@@ -180,7 +168,8 @@ class App extends React.Component {
             return (
               <ScaleRecipe
                 recipe={recipe}
-                //onClickSaveRecipe={this.onClickSaveRecipe}
+                match={match}
+
               />
             );
           }} />
