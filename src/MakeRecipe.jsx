@@ -1,10 +1,26 @@
 import React from 'react';
 import convert from 'recipe-unit-converter';
+import clone from 'clone';
 
 class MakeRecipe extends React.Component {
 	constructor(props) {
       super(props);
-      this.state = Object.assign({}, props.recipe);
+      const ingredients = props.recipe.ingredients.map((ingredient) => {
+      	return Object.assign({}, ingredient, {
+      		checked: false
+      	});
+      });
+      this.state = Object.assign({}, props.recipe, {
+      	ingredients
+      });
+    }
+
+    handleCheckChange(event, index) {
+    	const recipe = clone(this.state);
+
+    	recipe.ingredients[index].checked = event.target.checked;
+
+    	this.setState(recipe);
     }
 
     handleIngredientChange(inputAmount, unit, index) {
@@ -78,11 +94,18 @@ class MakeRecipe extends React.Component {
 
     renderIngredients() {
 		return this.state.ingredients.map((ingredient, index) => {
-			if (!ingredient) {
+			if (!ingredient || this.state.ingredients[index].checked) {
 				return null;
 			}
 			return (
 				<div className="form-row form-group" key={index}>
+					<div className="form-check">
+					  <input className="form-check-input position-static" 
+					  		type="checkbox" 
+					  		id="blankCheckbox" 
+					  		value="option1" 
+					  		onChange={(event) => this.handleCheckChange(event, index)} />
+					</div>
 					<div className="form-group col-3">
 					    {index === 0 ? <label htmlFor={`ingredient_amount_${index}`}>Quantity</label> : ''}
 					    <input readOnly
@@ -102,9 +125,6 @@ class MakeRecipe extends React.Component {
 						  	name={`ingredient_unit_${index}`}
 						  	onChange={(e) => this.handleIngredientChange(ingredient.amount, e.target.value, index)} >
 						  	{this.renderOptions(ingredient.unit, ingredient.amount)}
-
-							  
-							  
 						</select>
 					</div>
 					<div className="form-group col-5">
