@@ -211,7 +211,7 @@ class ScaleRecipe extends React.Component {
 					    value={this.state.directions || ''} />
 				  </div>
 				</form>
-				<Link to={`/recipes/${this.props.recipe.id}/make`} className="btn btn-primary">Make It</Link>
+				<Link to={`/recipes/${this.props.recipe.id}/make`} onClick={()=> { console.log(this.state); sessionStorage.setItem('stateRecipe', JSON.stringify(this.state))}} className="btn btn-primary">Make It</Link>
 			</div>
 	  	); 	
     }

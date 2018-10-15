@@ -5,14 +5,7 @@ import clone from 'clone';
 class MakeRecipe extends React.Component {
 	constructor(props) {
       super(props);
-      const ingredients = props.recipe.ingredients.map((ingredient) => {
-      	return Object.assign({}, ingredient, {
-      		checked: false
-      	});
-      });
-      this.state = Object.assign({}, props.recipe, {
-      	ingredients
-      });
+      this.state = JSON.parse(sessionStorage.getItem('stateRecipe'));
     }
 
     handleCheckChange(event, index) {

@@ -184,7 +184,7 @@ class AddEditRecipe extends React.Component {
 
 	  	return (
 	  		<div>
-	  			<h3>Add Recipe</h3>
+	  		<h3>Edit Recipe</h3>
 		  		<form>
 				  <div className="form-group">
 				    <label htmlFor="name">Recipe Name</label>

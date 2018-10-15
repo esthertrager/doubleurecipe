@@ -104,7 +104,7 @@ class App extends React.Component {
             return (
               <div>
                 <h1>Kukeze</h1>
-                <h2>Create, Share and Scale Your Recipes</h2>
+                <h2>Create, Share, and Scale Your Recipes</h2>
                 {this.state.user ? <Link to="/recipes">Go to My Recipes</Link> : <Link to="/recipes">Recipes</Link>}
                 <br/>
                 {this.state.user ? <a href="/api/auth/logout">Logout</a> : <div><a href="/api/auth/google"><img src="loginGoogle.png" style={{ height: '40px' }} /></a>
