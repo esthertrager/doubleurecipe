@@ -71,6 +71,7 @@ class RecipeForm extends React.Component {
 						  name={`ingredient_unit_${index}`}
 						  onChange={this.props.handleUnitChange}>
 							  <option value=""></option>
+							  <option value="serving">serving</option>
 							  <option value="smidgen">smidgen</option>
 							  <option value="pinch">pinch</option>
 							  <option value="dash">dash</option>
@@ -141,6 +142,7 @@ class RecipeForm extends React.Component {
 						    name={`total_unit`}
 						    onChange={this.props.handleTotalUnitChange}>
 						  <option value=""></option>
+						  <option value="serving">serving</option>
 						  <option value="smidgen">smidgen</option>
 						  <option value="pinch">pinch</option>
 						  <option value="dash">dash</option>
